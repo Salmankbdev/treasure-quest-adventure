@@ -171,7 +171,8 @@ local abilityBtn = New("ImageButton", {
 New("UICorner", { CornerRadius = UDim.new(0, 12), Parent = abilityBtn })
 New("UIStroke", { Color = Color3.fromRGB(80, 70, 120), Thickness = 2, Transparency = 0.5, Parent = abilityBtn })
 local abilityLabel = New("TextLabel", {
-	Size = UDim2.new(1, 0, 1, 0),
+	Size = UDim2.new(1, 0, 0.7, 0),
+	Position = UDim2.new(0, 0, 0, 4),
 	BackgroundTransparency = 1,
 	Text = "⚡\nAbility",
 	TextColor3 = colors.white,
@@ -179,6 +180,19 @@ local abilityLabel = New("TextLabel", {
 	TextSize = 9,
 	Parent = abilityBtn,
 })
+-- Key hint label on ability button
+New("TextLabel", {
+	Size = UDim2.new(0.5, 0, 0.25, 0),
+	Position = UDim2.new(1, -36, 1, -18),
+	BackgroundColor3 = Color3.fromRGB(60, 50, 90),
+	BackgroundTransparency = 0.3,
+	Text = "[Q]",
+	TextColor3 = Color3.fromRGB(180, 180, 200),
+	Font = Enum.Font.GothamBold,
+	TextSize = 9,
+	Parent = abilityBtn,
+})
+New("UICorner", { CornerRadius = UDim.new(0, 4), Parent = abilityLabel })
 local abilCd = New("TextLabel", {
 	Size = UDim2.new(1, 0, 1, 0),
 	BackgroundTransparency = 0.4,
@@ -235,6 +249,18 @@ local attackCdLabel = New("TextLabel", {
 	TextSize = 20,
 	ZIndex = 3,
 	Parent = attackCd,
+})
+-- Key hint label on attack button
+New("TextLabel", {
+	Size = UDim2.new(0.5, 0, 0.25, 0),
+	Position = UDim2.new(1, -36, 1, -18),
+	BackgroundColor3 = Color3.fromRGB(120, 30, 30),
+	BackgroundTransparency = 0.3,
+	Text = "[LMB]",
+	TextColor3 = Color3.fromRGB(220, 180, 180),
+	Font = Enum.Font.GothamBold,
+	TextSize = 7,
+	Parent = attackBtn,
 })
 
 -- == TARGETING RETICLE (center screen) ==
@@ -304,6 +330,18 @@ local jumpBtn = New("TextButton", {
 	TextSize = 11,
 	Parent = hud,
 })
+-- Key hint label on jump button
+New("TextLabel", {
+	Size = UDim2.new(1, -4, 0.3, 0),
+	Position = UDim2.new(0, 2, 0, 2),
+	BackgroundTransparency = 1,
+	Text = "[Space]",
+	TextColor3 = Color3.fromRGB(140, 140, 180),
+	Font = Enum.Font.Gotham,
+	TextSize = 7,
+	TextXAlignment = Enum.TextXAlignment.Right,
+	Parent = jumpBtn,
+})
 New("UICorner", { CornerRadius = UDim.new(0, 8), Parent = jumpBtn })
 
 -- Sprint button (bottom right)
@@ -317,6 +355,18 @@ local sprintBtn = New("TextButton", {
 	Font = Enum.Font.GothamBold,
 	TextSize = 10,
 	Parent = hud,
+})
+-- Key hint label on sprint button
+New("TextLabel", {
+	Size = UDim2.new(1, -4, 0.3, 0),
+	Position = UDim2.new(0, 2, 0, 2),
+	BackgroundTransparency = 1,
+	Text = "[Shift]",
+	TextColor3 = Color3.fromRGB(140, 140, 180),
+	Font = Enum.Font.Gotham,
+	TextSize = 7,
+	TextXAlignment = Enum.TextXAlignment.Right,
+	Parent = sprintBtn,
 })
 New("UICorner", { CornerRadius = UDim.new(0, 8), Parent = sprintBtn })
 
@@ -332,7 +382,248 @@ local interactBtn = New("TextButton", {
 	TextSize = 20,
 	Parent = hud,
 })
+-- Key hint label on interact button
+New("TextLabel", {
+	Size = UDim2.new(1, -4, 0.3, 0),
+	Position = UDim2.new(0, 2, 0, 2),
+	BackgroundTransparency = 1,
+	Text = "[E]",
+	TextColor3 = Color3.fromRGB(140, 140, 180),
+	Font = Enum.Font.Gotham,
+	TextSize = 8,
+	TextXAlignment = Enum.TextXAlignment.Right,
+	Parent = interactBtn,
+})
 New("UICorner", { CornerRadius = UDim.new(0, 8), Parent = interactBtn })
+
+-- Shop toggle button (between ability and interact)
+local shopBtn = New("TextButton", {
+	Size = UDim2.new(0, 55, 0, 40),
+	Position = UDim2.new(0.5, 30, 1, -60),
+	BackgroundColor3 = Color3.fromRGB(60, 50, 30),
+	BorderSizePixel = 0,
+	Text = "🏪",
+	TextColor3 = colors.white,
+	Font = Enum.Font.Gotham,
+	TextSize = 20,
+	Parent = hud,
+})
+New("TextLabel", {
+	Size = UDim2.new(1, -4, 0.3, 0),
+	Position = UDim2.new(0, 2, 0, 2),
+	BackgroundTransparency = 1,
+	Text = "[B]",
+	TextColor3 = Color3.fromRGB(180, 160, 120),
+	Font = Enum.Font.Gotham,
+	TextSize = 8,
+	TextXAlignment = Enum.TextXAlignment.Right,
+	Parent = shopBtn,
+})
+New("UICorner", { CornerRadius = UDim.new(0, 8), Parent = shopBtn })
+
+-- == SHOP PANEL ==
+local shopFrame = New("Frame", {
+	Size = UDim2.new(0, 600, 0, 450),
+	Position = UDim2.new(0.5, -300, 0.5, -225),
+	BackgroundColor3 = Color3.fromRGB(15, 15, 30),
+	BorderSizePixel = 0,
+	Visible = false,
+	ZIndex = 20,
+	Parent = screenGui,
+})
+New("UICorner", { CornerRadius = UDim.new(0, 16), Parent = shopFrame })
+New("UIGradient", { Color = ColorSequence.new({ ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 35, 25)), ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 15, 30)) }), Parent = shopFrame })
+New("UIStroke", { Color = Color3.fromRGB(255, 200, 100), Thickness = 2, Transparency = 0.5, Parent = shopFrame })
+-- Shop title
+New("TextLabel", {
+	Size = UDim2.new(1, 0, 0, 40),
+	Position = UDim2.new(0, 0, 0, 8),
+	BackgroundTransparency = 1,
+	Text = "🏪 SHOP",
+	TextColor3 = Color3.fromRGB(255, 200, 100),
+	Font = Enum.Font.GothamBold,
+	TextSize = 22,
+	Parent = shopFrame,
+})
+-- Close button
+local shopCloseBtn = New("TextButton", {
+	Size = UDim2.new(0, 30, 0, 30),
+	Position = UDim2.new(1, -36, 0, 8),
+	BackgroundColor3 = Color3.fromRGB(60, 40, 40),
+	BorderSizePixel = 0,
+	Text = "✕",
+	TextColor3 = Color3.fromRGB(220, 100, 100),
+	Font = Enum.Font.GothamBold,
+	TextSize = 16,
+	Parent = shopFrame,
+})
+New("UICorner", { CornerRadius = UDim.new(0, 8), Parent = shopCloseBtn })
+shopCloseBtn.MouseButton1Click:Connect(function() shopFrame.Visible = false end)
+
+-- Tab buttons
+local shopWeaponTab = New("TextButton", {
+	Size = UDim2.new(0.5, -4, 0, 30),
+	Position = UDim2.new(0, 8, 0, 50),
+	BackgroundColor3 = Color3.fromRGB(40, 35, 25),
+	BorderSizePixel = 0,
+	Text = "⚔️ Weapons",
+	TextColor3 = Color3.fromRGB(255, 200, 100),
+	Font = Enum.Font.GothamBold,
+	TextSize = 14,
+	Parent = shopFrame,
+})
+New("UICorner", { CornerRadius = UDim.new(0, 8), Parent = shopWeaponTab })
+local shopItemTab = New("TextButton", {
+	Size = UDim2.new(0.5, -4, 0, 30),
+	Position = UDim2.new(0.5, 4, 0, 50),
+	BackgroundColor3 = Color3.fromRGB(25, 25, 45),
+	BorderSizePixel = 0,
+	Text = "🧪 Items",
+	TextColor3 = Color3.fromRGB(180, 180, 190),
+	Font = Enum.Font.GothamBold,
+	TextSize = 14,
+	Parent = shopFrame,
+})
+New("UICorner", { CornerRadius = UDim.new(0, 8), Parent = shopItemTab })
+
+-- Shop list container
+local shopList = New("ScrollingFrame", {
+	Size = UDim2.new(1, -16, 1, -92),
+	Position = UDim2.new(0, 8, 0, 84),
+	BackgroundTransparency = 1,
+	BorderSizePixel = 0,
+	CanvasSize = UDim2.new(0, 0, 0, 0),
+	ScrollBarThickness = 4,
+	Parent = shopFrame,
+})
+
+-- Currency display
+local shopCoins = New("TextLabel", {
+	Size = UDim2.new(0, 100, 0, 20),
+	Position = UDim2.new(0, 8, 1, -24),
+	BackgroundTransparency = 1,
+	Text = "🪙 0",
+	TextColor3 = Color3.fromRGB(255, 200, 50),
+	Font = Enum.Font.GothamBold,
+	TextSize = 13,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	Parent = shopFrame,
+})
+local shopGems = New("TextLabel", {
+	Size = UDim2.new(0, 100, 0, 20),
+	Position = UDim2.new(0, 110, 1, -24),
+	BackgroundTransparency = 1,
+	Text = "💎 0",
+	TextColor3 = Color3.fromRGB(100, 200, 255),
+	Font = Enum.Font.GothamBold,
+	TextSize = 13,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	Parent = shopFrame,
+})
+
+-- Shop data
+local shopData = nil
+local getShopRF = ReplicatedStorage:FindFirstChild("GetShopData")
+local buyRE = ReplicatedStorage:FindFirstChild("BuyItem")
+if getShopRF then
+	local ok, result = pcall(function() return getShopRF:InvokeServer() end)
+	if ok and result then shopData = result end
+end
+
+local function refreshShopDisplay(tab)
+	if not shopData then
+		for _, c in ipairs(shopList:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
+		local errLabel = New("TextLabel", { Size = UDim2.new(1, 0, 0, 30), BackgroundTransparency = 1, Text = "Shop unavailable", TextColor3 = Color3.fromRGB(180, 80, 80), Font = Enum.Font.Gotham, TextSize = 14, Parent = shopList })
+		shopList.CanvasSize = UDim2.new(0, 0, 0, 34)
+		return
+	end
+	for _, c in ipairs(shopList:GetChildren()) do if c:IsA("TextButton") then c:Destroy() end end
+	local items = (tab == "weapons" and shopData.weapons) or (tab == "items" and shopData.items) or shopData.weapons
+	local coins = myCurrency.coins or 0
+	local gems = myCurrency.gems or 0
+	local sy = 0
+	for _, entry in ipairs(items or {}) do
+		local itemId = entry.id or entry.type
+		local name = itemId
+		local price = entry.price or 0
+		local currency = entry.currency or "coins"
+		local wData = tab == "weapons" and Weapons[itemId]
+		if wData then name = wData.emoji .. " " .. wData.name end
+		local canAfford = (currency == "coins" and coins >= price) or (currency == "gems" and gems >= price)
+		local btn = New("TextButton", {
+			Size = UDim2.new(1, 0, 0, 48),
+			BackgroundColor3 = Color3.fromRGB(25, 25, 45),
+			BorderSizePixel = 0,
+			Parent = shopList,
+		})
+		sy = sy + 48
+		btn.MouseEnter:Connect(function() btn.BackgroundColor3 = Color3.fromRGB(45, 45, 70) end)
+		btn.MouseLeave:Connect(function() btn.BackgroundColor3 = Color3.fromRGB(25, 25, 45) end)
+		if tab == "weapons" and wData then
+			local desc = (wData.description or "") .. " | DMG:" .. wData.damage .. " RNG:" .. wData.range
+			New("TextLabel", { Size = UDim2.new(1, -80, 0, 20), Position = UDim2.new(0, 8, 0, 2), BackgroundTransparency = 1, Text = name, TextColor3 = colors.white, Font = Enum.Font.GothamBold, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, Parent = btn })
+			New("TextLabel", { Size = UDim2.new(1, -80, 0, 16), Position = UDim2.new(0, 8, 0, 22), BackgroundTransparency = 1, Text = desc, TextColor3 = Color3.fromRGB(180, 180, 190), Font = Enum.Font.Gotham, TextSize = 9, TextXAlignment = Enum.TextXAlignment.Left, Parent = btn })
+		elseif tab == "items" then
+			local iData = (require(ReplicatedStorage.Shared.Items) or {})[itemId] or {}
+			New("TextLabel", { Size = UDim2.new(1, -80, 0, 20), Position = UDim2.new(0, 8, 0, 2), BackgroundTransparency = 1, Text = (iData.emoji or "📦") .. " " .. (iData.name or itemId), TextColor3 = colors.white, Font = Enum.Font.GothamBold, TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left, Parent = btn })
+			New("TextLabel", { Size = UDim2.new(1, -80, 0, 16), Position = UDim2.new(0, 8, 0, 22), BackgroundTransparency = 1, Text = iData.description or "", TextColor3 = Color3.fromRGB(180, 180, 190), Font = Enum.Font.Gotham, TextSize = 9, TextXAlignment = Enum.TextXAlignment.Left, Parent = btn })
+		end
+		local priceStr = (currency == "coins" and "🪙" or "💎") .. " " .. price
+		New("TextLabel", { Size = UDim2.new(0, 70, 1, 0), Position = UDim2.new(1, -76, 0, 0), BackgroundTransparency = 1, Text = priceStr, TextColor3 = canAfford and Color3.fromRGB(200, 200, 100) or Color3.fromRGB(200, 80, 80), Font = Enum.Font.GothamBold, TextSize = 12, Parent = btn })
+		if canAfford and buyRE then
+			btn.MouseButton1Click:Connect(function()
+				buyRE:FireServer(itemId, tab == "weapons" and "weapon" or "item")
+				if getShopRF then
+					local ok2, res2 = pcall(function() return getShopRF:InvokeServer() end)
+					if ok2 and res2 then shopData = res2 end
+				end
+				refreshShopDisplay(tab)
+			end)
+		end
+	end
+	shopList.CanvasSize = UDim2.new(0, 0, 0, sy + 4)
+	shopCoins.Text = "🪙 " .. (coins or 0)
+	shopGems.Text = "💎 " .. (gems or 0)
+end
+
+-- Shop visibility toggle
+local shopOpen = false
+local function toggleShop()
+	shopOpen = not shopOpen
+	shopFrame.Visible = shopOpen
+	if shopOpen then
+		if getShopRF then
+			local ok, result = pcall(function() return getShopRF:InvokeServer() end)
+			if ok and result then shopData = result end
+		end
+		refreshShopDisplay("weapons")
+		shopWeaponTab.BackgroundColor3 = Color3.fromRGB(40, 35, 25)
+		shopWeaponTab.TextColor3 = Color3.fromRGB(255, 200, 100)
+		shopItemTab.BackgroundColor3 = Color3.fromRGB(25, 25, 45)
+		shopItemTab.TextColor3 = Color3.fromRGB(180, 180, 190)
+	end
+end
+shopBtn.MouseButton1Click:Connect(toggleShop)
+shopWeaponTab.MouseButton1Click:Connect(function()
+	shopWeaponTab.BackgroundColor3 = Color3.fromRGB(40, 35, 25)
+	shopWeaponTab.TextColor3 = Color3.fromRGB(255, 200, 100)
+	shopItemTab.BackgroundColor3 = Color3.fromRGB(25, 25, 45)
+	shopItemTab.TextColor3 = Color3.fromRGB(180, 180, 190)
+	refreshShopDisplay("weapons")
+end)
+shopItemTab.MouseButton1Click:Connect(function()
+	shopItemTab.BackgroundColor3 = Color3.fromRGB(40, 35, 25)
+	shopItemTab.TextColor3 = Color3.fromRGB(255, 200, 100)
+	shopWeaponTab.BackgroundColor3 = Color3.fromRGB(25, 25, 45)
+	shopWeaponTab.TextColor3 = Color3.fromRGB(180, 180, 190)
+	refreshShopDisplay("items")
+end)
+
+-- Keyboard shortcut
+UserInputService.InputBegan:Connect(function(input, gp)
+	if gp then return end
+	if input.KeyCode == Enum.KeyCode.B then toggleShop() end
+end)
 
 -- == MINIMAP (top right) ==
 local minimap = New("Frame", {
@@ -504,7 +795,6 @@ local islandList = New("ScrollingFrame", {
 	BackgroundTransparency = 1,
 	BorderSizePixel = 0,
 	CanvasSize = UDim2.new(0, 0, 0, 0),
-	AutomaticCanvasSize = Enum.AutomaticSize.Y,
 	ScrollBarThickness = 3,
 	ScrollingDirection = Enum.ScrollingDirection.Y,
 	Parent = islandPanel,
@@ -514,7 +804,9 @@ local getIslands = ReplicatedStorage:FindFirstChild("GetIslands")
 if getIslands then
 	local islands = getIslands:InvokeServer()
 	if islands then
+		local islY = 0
 		for _, islData in ipairs(islands) do
+			islY = islY + 34
 			local islBtn = New("TextButton", { 
 				Size = UDim2.new(1, 0, 0, 34), 
 				BackgroundColor3 = Color3.fromRGB(20, 20, 40), 
@@ -560,6 +852,7 @@ if getIslands then
 				end
 			end)
 		end
+		islandList.CanvasSize = UDim2.new(0, 0, 0, islY + 4)
 	end
 end
 
@@ -610,7 +903,6 @@ local csList = New("ScrollingFrame", {
 	BackgroundTransparency = 1,
 	BorderSizePixel = 0,
 	CanvasSize = UDim2.new(0, 0, 0, 0),
-	AutomaticCanvasSize = Enum.AutomaticSize.Y,
 	ScrollBarThickness = 4,
 	Parent = csBg,
 })
@@ -633,6 +925,7 @@ local selectRemote = ReplicatedStorage:FindFirstChild("SelectCharacter")
 local spawnRemote = ReplicatedStorage:FindFirstChild("CharacterSpawned")
 local hudRemote = ReplicatedStorage:FindFirstChild("UpdateHUD")
 local lvlUpRemote = ReplicatedStorage:FindFirstChild("LevelUp")
+local myCurrency = { coins = 0, gems = 0 }
 local crystalRemote = ReplicatedStorage:FindFirstChild("CrystalCollected")
 
 if hudRemote then
@@ -644,6 +937,8 @@ if hudRemote then
 		local men = data.maxEnergy or 100
 		local coins = data.coins or 0
 		local gems = data.gems or 0
+		myCurrency.coins = coins
+		myCurrency.gems = gems
 		local lvl = data.level or 1
 		local xp = data.xp or 0
 		-- Animated bar fill
@@ -693,6 +988,7 @@ if chestRewardRemote then
 end
 
 local defaultCharId = "warrior"
+local csY = 0
 skipBtn.MouseButton1Click:Connect(function()
 	if selectRemote then selectRemote:FireServer(defaultCharId) end
 	charSelectFrame.Visible = false
@@ -700,6 +996,7 @@ skipBtn.MouseButton1Click:Connect(function()
 end)
 
 for _, charData in pairs(Characters) do
+	csY = csY + 72
 	local btn = New("TextButton", {
 		Size = UDim2.new(1, 0, 0, 72),
 		BackgroundColor3 = Color3.fromRGB(25, 25, 45),
@@ -730,6 +1027,7 @@ for _, charData in pairs(Characters) do
 		end
 	end)
 end
+csList.CanvasSize = UDim2.new(0, 0, 0, csY + 8)
 
 -- Damage number popup system
 local dmgNumberFolder = Instance.new("Folder")
@@ -833,22 +1131,17 @@ local function findNearestEnemy()
 	
 	local nearestPart = nil
 	local nearestDist = 15
-	local cam = workspace.CurrentCamera
+	-- No camera needed for distance-only check
 	
 	for _, v in ipairs(workspace:GetDescendants()) do
 		if v:IsA("BasePart") and v:GetAttribute("EnemyType") and v:GetAttribute("IsAlive") ~= false then
 			local dist = (v.Position - root.Position).Magnitude
 			if dist < nearestDist then
 				-- Check if enemy is roughly in front of the player (within 120 degree cone)
-				if cam then
-					local dirToEnemy = (v.Position - root.Position).Unit
-					local lookDir = root.CFrame.LookVector
-					local dot = dirToEnemy:Dot(lookDir)
-					if dot > -0.5 then
-						nearestDist = dist
-						nearestPart = v
-					end
-				else
+				local dirToEnemy = (v.Position - root.Position).Unit
+				local lookDir = root.CFrame.LookVector
+				local dot = dirToEnemy:Dot(lookDir)
+				if dot > -0.5 then
 					nearestDist = dist
 					nearestPart = v
 				end
@@ -862,56 +1155,57 @@ end
 -- Track the currently targeted enemy
 local currentTarget = nil
 
--- Update targeting reticle every frame
-RunService = RunService or game:GetService("RunService")
+-- Update targeting reticle periodically (not every frame - every 0.1s is enough)
+local lastTargetUpdate = 0
 RunService.BindToRenderStep("TargetingUpdate", Enum.RenderPriority.Camera.Value - 1, function()
 	local cam = workspace.CurrentCamera
 	if not cam then return end
 	
-	local target = findNearestEnemy()
-	currentTarget = target
+	-- Only search for target every 5 frames to save performance
+	local now = tick()
+	if now - lastTargetUpdate > 0.1 then
+		lastTargetUpdate = now
+		currentTarget = findNearestEnemy()
+	end
+	
+	local target = currentTarget
+	
+	-- Always keep reticle at center of screen, only highlight when target found
+	-- The reticle position is always center - we just change its appearance
+	aireticle.Position = UDim2.new(0.5, -20, 0.5, -20)
 	
 	if target then
-		-- Show reticle on enemy position
-		local screenPos, onScreen = cam:WorldToViewportPoint(target.Position + Vector3.new(0, 2, 0))
-		if onScreen then
-			local enemyData = target:GetAttribute("EnemyType") or ""
-			targetLabel.Text = "🎯 " .. enemyData
-			targetLabel.Visible = true
-			
-			-- Light up the dot
-			reticleDot.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-			reticleDot.BackgroundTransparency = 0
-			
-			-- Move reticle to enemy position smoothly
-			local tweenInfo = TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-			local goal = {Position = UDim2.new(0, screenPos.X - 20, 0, screenPos.Y - 20)}
-			local tween = TweenService:Create(aimReticle, tweenInfo, goal)
-			tween:Play()
-			
-			-- Show HP bar next to reticle for boss
-			if target:GetAttribute("IsBoss") then
-				targetLabel.Text = "👑 BOSS - " .. enemyData
-				targetLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
-			else
-				targetLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
-			end
+		local enemyData = target:GetAttribute("EnemyType") or ""
+		targetLabel.Text = "🎯 " .. enemyData
+		targetLabel.Visible = true
+		
+		-- Light up the dot and crosshair
+		reticleDot.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+		reticleDot.BackgroundTransparency = 0
+		reticleH.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+		reticleV.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+		
+		-- Show boss label
+		if target:GetAttribute("IsBoss") then
+			targetLabel.Text = "👑 BOSS - " .. enemyData
+			targetLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
+		else
+			targetLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
 		end
 	else
-		-- Reset reticle to center
+		-- Dim reticle at center
 		targetLabel.Visible = false
 		reticleDot.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 		reticleDot.BackgroundTransparency = 0.5
-		
-		local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-		local goal = {Position = UDim2.new(0.5, -20, 0.5, -20)}
-		local tween = TweenService:Create(aimReticle, tweenInfo, goal)
-		tween:Play()
+		reticleH.BackgroundColor3 = colors.accent
+		reticleV.BackgroundColor3 = colors.accent
 	end
 end)
 
--- Attack handler with cooldown
-attackBtn.MouseButton1Click:Connect(function()
+-- ============ SHARED ACTION FUNCTIONS ============
+-- These are called by BOTH button click handlers AND keyboard shortcuts
+
+local function performAttack()
 	local dealRemote = ReplicatedStorage:FindFirstChild("DealDamage")
 	if not dealRemote then return end
 	
@@ -956,7 +1250,6 @@ attackBtn.MouseButton1Click:Connect(function()
 		if weaponHandle then
 			local originalColor = weaponHandle.Color
 			local originalSize = weaponHandle.Size
-			-- Flash the weapon
 			weaponHandle.Color = Color3.fromRGB(255, 255, 200)
 			weaponHandle.Size = originalSize * 1.2
 			task.delay(0.08, function()
@@ -974,8 +1267,129 @@ attackBtn.MouseButton1Click:Connect(function()
 			end
 		end)
 	end
+end
+
+local function performAbility()
+	local useRemote = ReplicatedStorage:FindFirstChild("UseAbility")
+	if useRemote then useRemote:FireServer() end
+	abilCd.Visible = true
+	abilCd.Text = "..."
+end
+
+local function performInteract()
+	local char = player.Character
+	if not char then return end
+	local root = char:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+	for _, v in ipairs(workspace:GetDescendants()) do
+		if v:IsA("BasePart") and v:GetAttribute("InteractType") then
+			if (v.Position - root.Position).Magnitude < 8 then
+				local it = v:GetAttribute("InteractType")
+				local id = v:GetAttribute("InteractData")
+				if it == "chest" then
+					local cr = ReplicatedStorage:FindFirstChild("OpenChest")
+					if cr then cr:FireServer(id) end
+				elseif it == "crystal" then
+					local cr = ReplicatedStorage:FindFirstChild("CollectCrystal")
+					if cr then cr:FireServer(id, v:GetAttribute("CrystalName")) end
+				elseif it == "coin" then
+					local cr = ReplicatedStorage:FindFirstChild("CollectCoin")
+					if cr then cr:FireServer(v:GetAttribute("Amount") or 1) end
+				elseif it == "gem" then
+					local cr = ReplicatedStorage:FindFirstChild("CollectGem")
+					if cr then cr:FireServer(v:GetAttribute("Amount") or 1) end
+				end
+				break
+			end
+		end
+	end
+end
+
+local function performJump()
+	local char = player.Character
+	if char then
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		if hum then hum.Jump = true end
+	end
+end
+
+local function performSprintStart()
+	local char = player.Character
+	if char then
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		if hum then hum.WalkSpeed = 32 end
+	end
+end
+
+local function performSprintEnd()
+	local char = player.Character
+	if char then
+		local hum = char:FindFirstChildOfClass("Humanoid")
+		if hum then hum.WalkSpeed = 16 end
+	end
+end
+
+-- ============ BUTTON CLICK HANDLERS ============
+attackBtn.MouseButton1Click:Connect(performAttack)
+abilityBtn.MouseButton1Click:Connect(performAbility)
+interactBtn.MouseButton1Click:Connect(performInteract)
+
+jumpBtn.MouseButton1Down:Connect(performJump)
+sprintBtn.MouseButton1Down:Connect(performSprintStart)
+sprintBtn.MouseButton1Up:Connect(performSprintEnd)
+
+-- ============ KEYBOARD / MOUSE SHORTCUTS ============
+local shiftHeld = false
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	
+	local key = input.KeyCode
+	
+	if key == Enum.KeyCode.Space then
+		performJump()
+	elseif key == Enum.KeyCode.Q then
+		performAbility()
+	elseif key == Enum.KeyCode.E then
+		performInteract()
+	elseif key == Enum.KeyCode.LeftShift or key == Enum.KeyCode.RightShift then
+		shiftHeld = true
+		performSprintStart()
+	elseif key == Enum.KeyCode.ButtonR2 or key == Enum.KeyCode.ButtonX then
+		performAbility()  -- controller RB/X
+	elseif key == Enum.KeyCode.ButtonL2 or key == Enum.KeyCode.ButtonA then
+		performJump()  -- controller LB/A
+	end
 end)
 
+UserInputService.InputEnded:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	
+	if input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.RightShift then
+		shiftHeld = false
+		performSprintEnd()
+	end
+end)
+
+-- Left mouse click = attack (when not on UI elements)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		-- Avoid double-fire: don't attack if clicking directly on the attack button
+		local mousePos = UserInputService:GetMouseLocation()
+		local absPos = attackBtn.AbsolutePosition
+		local absSize = attackBtn.AbsoluteSize
+		local onAttackBtn = mousePos.X >= absPos.X and mousePos.X <= absPos.X + absSize.X 
+			and mousePos.Y >= absPos.Y and mousePos.Y <= absPos.Y + absSize.Y
+		
+		if not onAttackBtn then
+			performAttack()
+		end
+	end
+end)
+
+-- ============ CHARACTER SPAWN HANDLING ============
 local myCharacterId = "warrior"
 
 if spawnRemote then
@@ -1023,76 +1437,6 @@ if abActivated then
 		abilityBtn.BackgroundColor3 = Color3.fromRGB(40, 35, 60)
 	end)
 end
-
-jumpBtn.MouseButton1Down:Connect(function()
-	local char = player.Character
-	if char then
-		local hum = char:FindFirstChildOfClass("Humanoid")
-		if hum then hum.Jump = true end
-	end
-end)
-
-sprintBtn.MouseButton1Down:Connect(function()
-	local char = player.Character
-	if char then
-		local hum = char:FindFirstChildOfClass("Humanoid")
-		if hum then hum.WalkSpeed = 32 end
-	end
-end)
-sprintBtn.MouseButton1Up:Connect(function()
-	local char = player.Character
-	if char then
-		local hum = char:FindFirstChildOfClass("Humanoid")
-		if hum then hum.WalkSpeed = 16 end
-	end
-end)
-
-abilityBtn.MouseButton1Click:Connect(function()
-	local useRemote = ReplicatedStorage:FindFirstChild("UseAbility")
-	if useRemote then useRemote:FireServer() end
-	abilCd.Visible = true
-	abilCd.Text = "..."
-end)
-
-interactBtn.MouseButton1Click:Connect(function()
-	local char = player.Character
-	if not char then return end
-	local root = char:FindFirstChild("HumanoidRootPart")
-	if not root then return end
-	for _, v in ipairs(workspace:GetDescendants()) do
-		if v:IsA("BasePart") and v:GetAttribute("InteractType") then
-			if (v.Position - root.Position).Magnitude < 8 then
-				local it = v:GetAttribute("InteractType")
-				local id = v:GetAttribute("InteractData")
-				if it == "chest" then
-					local cr = ReplicatedStorage:FindFirstChild("OpenChest")
-					if cr then cr:FireServer(id) end
-				elseif it == "crystal" then
-					local cr = ReplicatedStorage:FindFirstChild("CollectCrystal")
-					if cr then cr:FireServer(id, v:GetAttribute("CrystalName")) end
-				elseif it == "coin" then
-					local cr = ReplicatedStorage:FindFirstChild("CollectCoin")
-					if cr then cr:FireServer(v:GetAttribute("Amount") or 1) end
-				elseif it == "gem" then
-					local cr = ReplicatedStorage:FindFirstChild("CollectGem")
-					if cr then cr:FireServer(v:GetAttribute("Amount") or 1) end
-				end
-				break
-			end
-		end
-	end
-end)
-
-UserInputService.InputBegan:Connect(function(input, p)
-	if p then return end
-	if input.KeyCode == Enum.KeyCode.Space then
-		local char = player.Character
-		if char then
-			local hum = char:FindFirstChildOfClass("Humanoid")
-			if hum then hum.Jump = true end
-		end
-	end
-end)
 
 -- Boss spawn notification handler
 local bossSpawnEvent = ReplicatedStorage:FindFirstChild("BossSpawned")

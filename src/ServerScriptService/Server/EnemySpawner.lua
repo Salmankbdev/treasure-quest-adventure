@@ -62,6 +62,113 @@ function addEyeGlow(part, color, enemySize)
 	end
 end
 
+-- Helper: weld a limb to the main body
+function attachLimb(parent, size, offset, color, material, shape, name)
+	local limb = Instance.new("Part")
+	limb.Name = name or "Limb"
+	limb.Size = size
+	limb.CFrame = parent.CFrame * CFrame.new(offset.X, offset.Y, offset.Z)
+	limb.Anchored = false
+	limb.CanCollide = false
+	limb.Locked = true
+	limb.Color = color or parent.Color
+	limb.Material = material or parent.Material
+	if shape then limb.Shape = shape end
+	limb.Parent = parent.Parent
+	
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = parent
+	weld.Part1 = limb
+	weld.Parent = limb
+	
+	return limb
+end
+
+-- Create multi-part enemy body (head, legs, arms, special features)
+function decorateEnemyBody(part, enemyType, enemyData, vis)
+	local size = part.Size
+	local col = vis.color
+	local mat = vis.mat
+	local isBoss = enemyData.isBoss
+	local scale = isBoss and 2 or 1
+	
+	-- Build different body structures based on shape type
+	if vis.shape == "cylinder" then
+		-- Humanoid-type enemies (goblin, skeleton, mummy, etc.): add head + legs
+		-- Head (sphere on top)
+		local headSize = size * Vector3.new(0.5, 0.3, 0.5) * scale
+		attachLimb(part, headSize, Vector3.new(0, size.Y/2 + headSize.Y/2, 0), col, mat, Enum.PartType.Ball, "Head")
+		
+		-- Left leg
+		local legSize = Vector3.new(0.3, 0.8, 0.3) * scale
+		attachLimb(part, legSize, Vector3.new(-size.X/4, -size.Y/2 - legSize.Y/2, 0), col, mat, Enum.PartType.Cylinder, "LeftLeg")
+		-- Right leg
+		attachLimb(part, legSize, Vector3.new(size.X/4, -size.Y/2 - legSize.Y/2, 0), col, mat, Enum.PartType.Cylinder, "RightLeg")
+		
+		-- Arms for specific types
+		if enemyType ~= "mummy" and enemyType ~= "ice_monster" then
+			local armSize = Vector3.new(0.25, 0.7, 0.25) * scale
+			-- Left arm
+			attachLimb(part, armSize, Vector3.new(-size.X/2 - armSize.X/2, size.Y/4, 0), col, mat, Enum.PartType.Cylinder, "LeftArm")
+			-- Right arm
+			attachLimb(part, armSize, Vector3.new(size.X/2 + armSize.X/2, size.Y/4, 0), col, mat, Enum.PartType.Cylinder, "RightArm")
+		end
+		
+	elseif vis.shape == "sphere" or vis.shape == "ball" then
+		-- Spider-type or floating enemies
+		if enemyType == "giant_spider" or enemyType == "bat" then
+			-- Add leg pairs
+			for i = 1, 4 do
+				local angle = (i / 4) * math.pi * 2
+				local legSize = Vector3.new(0.2, 0.6, 0.2) * scale
+				local legOffset = Vector3.new(math.cos(angle) * size.X/2, -size.Y/2, math.sin(angle) * size.Z/2)
+				attachLimb(part, legSize, legOffset, vis.accentColor, mat, Enum.PartType.Cylinder, "Leg" .. i)
+			end
+		end
+		
+		if enemyType == "bat" then
+			-- Wings
+			local wingSize = Vector3.new(1.5, 0.1, 0.5) * scale
+			attachLimb(part, wingSize, Vector3.new(-1, 0, 0), col, Enum.Material.Fabric, nil, "LeftWing")
+			attachLimb(part, wingSize, Vector3.new(1, 0, 0), col, Enum.Material.Fabric, nil, "RightWing")
+		end
+		
+		-- Fire elemental: no limbs, just particles
+		
+	elseif vis.shape == "block" then
+		-- Quadruped-type enemies (scorpion) or boxy enemies (golem)
+		if enemyType == "scorpion" then
+			-- Tail
+			local tailSize = Vector3.new(0.3, 0.5, 0.3) * scale
+			local tail = attachLimb(part, tailSize, Vector3.new(0, 0.2, -size.Z/2 - tailSize.Z/2), vis.accentColor, mat, Enum.PartType.Cylinder, "Tail")
+			-- Stinger
+			local stingerSize = Vector3.new(0.4, 0.4, 0.4) * scale
+			attachLimb(tail, stingerSize, Vector3.new(0, 0.3, -tailSize.Z/2 - 0.2), Color3.fromRGB(255, 100, 0), Enum.Material.Neon, Enum.PartType.Ball, "Stinger")
+			
+			-- Legs
+			for i = 1, 6 do
+				local angle = (i / 6) * math.pi * 2
+				local legSize = Vector3.new(0.2, 0.4, 0.2) * scale
+				local legOffset = Vector3.new(math.cos(angle) * size.X/2 + 0.2, -size.Y/2, math.sin(angle) * size.Z/2 + 0.2)
+				attachLimb(part, legSize, legOffset, vis.accentColor, mat, Enum.PartType.Cylinder, "Leg" .. i)
+			end
+			
+		elseif enemyType == "golem" then
+			-- Head
+			local headSize = Vector3.new(1.2, 0.8, 1.2) * scale
+			attachLimb(part, headSize, Vector3.new(0, size.Y/2 + headSize.Y/2, 0), col, Enum.Material.Slate, Enum.PartType.Ball, "Head")
+			-- Legs (sturdy)
+			local legSize = Vector3.new(0.6, 0.6, 0.6) * scale
+			attachLimb(part, legSize, Vector3.new(-0.8, -size.Y/2 - 0.3, 0), col, Enum.Material.Slate, Enum.PartType.Block, "LeftLeg")
+			attachLimb(part, legSize, Vector3.new(0.8, -size.Y/2 - 0.3, 0), col, Enum.Material.Slate, Enum.PartType.Block, "RightLeg")
+			-- Arms
+			local armSize = Vector3.new(0.8, 0.5, 0.5) * scale
+			attachLimb(part, armSize, Vector3.new(-size.X/2 - armSize.X/2, 0.5, 0), col, Enum.Material.Slate, Enum.PartType.Block, "LeftArm")
+			attachLimb(part, armSize, Vector3.new(size.X/2 + armSize.X/2, 0.5, 0), col, Enum.Material.Slate, Enum.PartType.Block, "RightArm")
+		end
+	end
+end
+
 function spawnEnemyInZone(islandId, enemyType, spawnPos, index)
 	local enemyData = Enemies[enemyType]
 	if not enemyData then return nil end
@@ -91,10 +198,13 @@ function spawnEnemyInZone(islandId, enemyType, spawnPos, index)
 	
 	part.Parent = zoneFolder
 	
+	-- Build multi-part body
+	decorateEnemyBody(part, enemyType, enemyData, vis)
+	
 	-- Eyes
 	addEyeGlow(part, vis.eyeColor or Color3.fromRGB(255, 0, 0), part.Size)
 	
-	-- Accent band (visual distinction)
+	-- Accent band (visual distinction) - only on humanoids
 	local accent = Instance.new("Part")
 	accent.Name = "AccentBand"
 	accent.Size = Vector3.new(part.Size.X + 0.2, 0.3, part.Size.Z + 0.2)
@@ -114,7 +224,7 @@ function spawnEnemyInZone(islandId, enemyType, spawnPos, index)
 	local billboard = Instance.new("BillboardGui")
 	billboard.Name = "EnemyLabel"
 	billboard.Size = UDim2.new(0, 140, 0, 50)
-	billboard.StudsOffset = Vector3.new(0, part.Size.Y + 2, 0)
+	billboard.StudsOffset = Vector3.new(0, part.Size.Y + 3, 0)
 	billboard.AlwaysOnTop = true
 	billboard.Parent = part
 	
@@ -160,7 +270,6 @@ function spawnEnemyInZone(islandId, enemyType, spawnPos, index)
 		aura.Enabled = true
 		aura.Parent = part
 		
-		-- Boss nameplate with crown
 		billboard.Size = UDim2.new(0, 200, 0, 70)
 		hpLabel.TextSize = 14
 		nameLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
