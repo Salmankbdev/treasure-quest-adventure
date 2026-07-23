@@ -9,6 +9,50 @@ local Config = require(ReplicatedStorage.Shared.Config)
 _G.WorldManager = _G.WorldManager or {}
 local islandZones = {}
 
+-- Cache mesh assets from packs for decoration
+local assetMeshes = {}
+local function cacheAssetMeshes()
+	local assetsFolder = ReplicatedStorage:FindFirstChild("Assets")
+	if not assetsFolder then return end
+	for _, pack in ipairs(assetsFolder:GetChildren()) do
+		local function scan(inst)
+			if inst:IsA("MeshPart") then
+				local name = inst.Name:lower()
+				if name:find("tree") or name:find("pine") or name:find("beech") or name:find("birch") then
+					table.insert(assetMeshes, { inst = inst, type = "tree" })
+				elseif name:find("rock") or name:find("boulder") or name:find("stone") then
+					table.insert(assetMeshes, { inst = inst, type = "rock" })
+				elseif name:find("bush") or name:find("shrub") or name:find("hedge") then
+					table.insert(assetMeshes, { inst = inst, type = "bush" })
+				elseif name:find("flower") or name:find("mushroom") or name:find("plant") then
+					table.insert(assetMeshes, { inst = inst, type = "flower" })
+				elseif name:find("pillar") or name:find("column") or name:find("obelisk") then
+					table.insert(assetMeshes, { inst = inst, type = "pillar" })
+				end
+			end
+			for _, child in ipairs(inst:GetChildren()) do
+				scan(child)
+			end
+		end
+		scan(pack)
+	end
+	print("[WorldManager] Cached " .. #assetMeshes .. " mesh assets")
+end
+cacheAssetMeshes()
+
+local function getAssetByType(meshType)
+	local matches = {}
+	for _, entry in ipairs(assetMeshes) do
+		if entry.type == meshType then
+			table.insert(matches, entry.inst)
+		end
+	end
+	if #matches > 0 then
+		return matches[math.random(#matches)]
+	end
+	return nil
+end
+
 -- Skybox asset IDs per island theme
 local skyboxes = {
 	forest = {
@@ -460,6 +504,16 @@ end
 function decorateTree(pos, size, foliageColor)
 	size = size or 4
 	foliageColor = foliageColor or Color3.fromRGB(40, 140, 40)
+	local mesh = getAssetByType("tree")
+	if mesh then
+		local clone = mesh:Clone()
+		clone.Position = pos + Vector3.new(0, math.random() * 2, 0)
+		local scale = 0.5 + math.random()
+		clone.Size = clone.Size * scale
+		clone.Anchored = true
+		clone.Parent = workspace
+		return
+	end
 	local trunk = Instance.new("Part")
 	trunk.Name = "TreeTrunk"
 	trunk.Size = Vector3.new(0.5, size, 0.5)
@@ -483,6 +537,14 @@ function decorateTree(pos, size, foliageColor)
 end
 
 function decorateBush(pos)
+	local mesh = getAssetByType("bush")
+	if mesh then
+		local clone = mesh:Clone()
+		clone.Position = pos
+		clone.Anchored = true
+		clone.Parent = workspace
+		return
+	end
 	local bush = Instance.new("Part")
 	bush.Name = "Bush"
 	local size = 1.5 + math.random() * 1.5
@@ -497,6 +559,14 @@ function decorateBush(pos)
 end
 
 function decorateRock(pos)
+	local mesh = getAssetByType("rock")
+	if mesh then
+		local clone = mesh:Clone()
+		clone.Position = pos
+		clone.Anchored = true
+		clone.Parent = workspace
+		return
+	end
 	local rock = Instance.new("Part")
 	rock.Name = "Rock"
 	local size = 1 + math.random() * 2.5
@@ -511,6 +581,15 @@ function decorateRock(pos)
 end
 
 function decorateFlower(pos)
+	local mesh = getAssetByType("flower")
+	if mesh then
+		local clone = mesh:Clone()
+		clone.Position = pos
+		clone.Anchored = true
+		clone.Parent = workspace
+		Debris:AddItem(clone, 120)
+		return
+	end
 	local colors = {Color3.fromRGB(255, 100, 100), Color3.fromRGB(255, 255, 100), Color3.fromRGB(255, 150, 200), Color3.fromRGB(150, 100, 255)}
 	local flower = Instance.new("Part")
 	flower.Name = "Flower"
@@ -525,6 +604,14 @@ function decorateFlower(pos)
 end
 
 function decoratePillar(pos)
+	local mesh = getAssetByType("pillar")
+	if mesh then
+		local clone = mesh:Clone()
+		clone.Position = pos
+		clone.Anchored = true
+		clone.Parent = workspace
+		return
+	end
 	local pillar = Instance.new("Part")
 	pillar.Name = "Pillar"
 	local height = 3 + math.random() * 4

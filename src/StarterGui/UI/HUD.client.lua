@@ -1065,15 +1065,29 @@ end
 local enemyHitRemote = ReplicatedStorage:FindFirstChild("EnemyHit")
 if enemyHitRemote then
 	enemyHitRemote.OnClientEvent:Connect(function(enemyId, damage, isCrit, element, enemyType)
-		local char = player.Character
-		if char then
-			local root = char:FindFirstChild("HumanoidRootPart")
+		-- Find the enemy part in workspace by its name
+		local enemyPart = workspace:FindFirstChild(enemyId, true)
+		
+		if enemyPart then
 			local cam = workspace.CurrentCamera
-			if root and cam then
-				local screenPos, onScreen = cam:WorldToViewportPoint(root.Position + Vector3.new(0, 5, 0))
+			if cam then
+				local screenPos, onScreen = cam:WorldToViewportPoint(enemyPart.Position + Vector3.new(0, enemyPart.Size.Y / 2, 0))
 				if onScreen then
-					local xOffset = math.random(-80, 80)
+					local xOffset = math.random(-30, 30)
 					showDamageNumber(Vector2.new(screenPos.X + xOffset, screenPos.Y - 40), damage, isCrit, element)
+				end
+			end
+		else
+			-- Ultimate fallback: show near player
+			local char = player.Character
+			if char then
+				local root = char:FindFirstChild("HumanoidRootPart")
+				local cam = workspace.CurrentCamera
+				if root and cam then
+					local screenPos, onScreen = cam:WorldToViewportPoint(root.Position + Vector3.new(0, 5, 0))
+					if onScreen then
+						showDamageNumber(Vector2.new(screenPos.X + math.random(-80, 80), screenPos.Y - 60), damage, isCrit, element)
+					end
 				end
 			end
 		end

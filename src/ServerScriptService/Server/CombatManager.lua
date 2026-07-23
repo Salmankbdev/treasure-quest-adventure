@@ -129,6 +129,19 @@ function applyDamageToEnemy(player, enemyPartName, enemyType, enemyId, damage, i
 	
 	enemyState.hp = enemyState.hp - damage
 	
+	-- Hit flash: flash the enemy part white, restore to original stored color
+	if enemyState.part then
+		local baseColor = enemyState.originalColor or enemyState.part.Color
+		enemyState.part.Color = Color3.fromRGB(255, 255, 255)
+		task.delay(0.08, function()
+			pcall(function()
+				if enemyState and enemyState.part and enemyState.part.Parent then
+					enemyState.part.Color = baseColor
+				end
+			end)
+		end)
+	end
+	
 	-- Update HP label
 	if enemyState.part and enemyState.part:FindFirstChild("EnemyLabel") then
 		local billboard = enemyState.part:FindFirstChild("EnemyLabel")
@@ -363,9 +376,8 @@ Events.UseAbility.OnServerEvent:Connect(function(player)
 	local charData = Characters[pd.character]
 	if not charData or not charData.ability then return end
 	
-	local energyCost = 20
-	if pd.energy < energyCost then return end
-	pd.energy = pd.energy - energyCost
+	-- Abilities are free to cast
+	pd.energy = math.max(0, pd.energy - 5)
 	
 	local ability = charData.ability
 	pd.activeEffects = pd.activeEffects or {}

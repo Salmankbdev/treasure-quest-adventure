@@ -7,22 +7,68 @@ local Islands = require(ReplicatedStorage.Shared.Islands)
 
 _G.ActiveEnemies = {}
 
--- Enhanced enemy visuals
+-- Enhanced enemy visuals with varied materials for non-box look
 local enemyVisuals = {
-	goblin = { shape = "cylinder", color = Color3.fromRGB(60, 180, 60), size = Vector3.new(2, 3.5, 2), eyeColor = Color3.fromRGB(255, 50, 50), mat = Enum.Material.SmoothPlastic, accentColor = Color3.fromRGB(80, 60, 40) },
-	giant_spider = { shape = "sphere", color = Color3.fromRGB(40, 80, 40), size = Vector3.new(3, 2, 3), eyeColor = Color3.fromRGB(255, 100, 0), mat = Enum.Material.Wood, accentColor = Color3.fromRGB(60, 40, 20) },
-	skeleton_warrior = { shape = "cylinder", color = Color3.fromRGB(200, 200, 200), size = Vector3.new(2, 4, 2), eyeColor = Color3.fromRGB(255, 50, 50), mat = Enum.Material.SmoothPlastic, accentColor = Color3.fromRGB(120, 120, 120) },
-	mummy = { shape = "cylinder", color = Color3.fromRGB(200, 180, 140), size = Vector3.new(2, 4, 2), eyeColor = Color3.fromRGB(255, 200, 100), mat = Enum.Material.Fabric, accentColor = Color3.fromRGB(160, 140, 100) },
-	scorpion = { shape = "block", color = Color3.fromRGB(160, 120, 60), size = Vector3.new(3, 1.5, 2), eyeColor = Color3.fromRGB(255, 50, 50), mat = Enum.Material.SmoothPlastic, accentColor = Color3.fromRGB(120, 80, 40) },
-	ice_monster = { shape = "cylinder", color = Color3.fromRGB(100, 200, 255), size = Vector3.new(2.5, 4, 2.5), eyeColor = Color3.fromRGB(200, 255, 255), mat = Enum.Material.Ice, accentColor = Color3.fromRGB(60, 140, 200) },
-	fire_dragon = { shape = "cylinder", color = Color3.fromRGB(200, 60, 20), size = Vector3.new(3, 5, 3), eyeColor = Color3.fromRGB(255, 200, 50), mat = Enum.Material.SmoothPlastic, accentColor = Color3.fromRGB(255, 100, 0) },
-	shadow_knight = { shape = "cylinder", color = Color3.fromRGB(30, 20, 50), size = Vector3.new(2.5, 4.5, 2.5), eyeColor = Color3.fromRGB(150, 50, 255), mat = Enum.Material.SmoothPlastic, accentColor = Color3.fromRGB(80, 30, 100) },
-	-- New enemies
-	bat = { shape = "sphere", color = Color3.fromRGB(60, 40, 80), size = Vector3.new(1.5, 1, 1.5), eyeColor = Color3.fromRGB(255, 50, 50), mat = Enum.Material.SmoothPlastic, accentColor = Color3.fromRGB(100, 60, 120) },
-	fire_elemental = { shape = "ball", color = Color3.fromRGB(255, 120, 20), size = Vector3.new(2.5, 2.5, 2.5), eyeColor = Color3.fromRGB(255, 255, 100), mat = Enum.Material.Neon, accentColor = Color3.fromRGB(255, 200, 50) },
-	golem = { shape = "block", color = Color3.fromRGB(120, 110, 100), size = Vector3.new(3.5, 4, 3.5), eyeColor = Color3.fromRGB(100, 200, 255), mat = Enum.Material.Slate, accentColor = Color3.fromRGB(80, 70, 60) },
-	dark_wizard = { shape = "cylinder", color = Color3.fromRGB(50, 30, 80), size = Vector3.new(2, 4, 2), eyeColor = Color3.fromRGB(200, 50, 255), mat = Enum.Material.SmoothPlastic, accentColor = Color3.fromRGB(100, 40, 140) },
+	goblin = { shape = "cylinder", color = Color3.fromRGB(60, 180, 60), size = Vector3.new(2, 3.5, 2), eyeColor = Color3.fromRGB(255, 50, 50), mat = Enum.Material.LeafyGrass, accentColor = Color3.fromRGB(80, 60, 40), limbMat = Enum.Material.Wood },
+	giant_spider = { shape = "sphere", color = Color3.fromRGB(40, 80, 40), size = Vector3.new(3, 2, 3), eyeColor = Color3.fromRGB(255, 100, 0), mat = Enum.Material.Mud, accentColor = Color3.fromRGB(60, 40, 20), limbMat = Enum.Material.Wood },
+	skeleton_warrior = { shape = "cylinder", color = Color3.fromRGB(235, 225, 200), size = Vector3.new(2, 4, 2), eyeColor = Color3.fromRGB(255, 50, 50), mat = Enum.Material.Marble, accentColor = Color3.fromRGB(200, 190, 170), limbMat = Enum.Material.Limestone },
+	mummy = { shape = "cylinder", color = Color3.fromRGB(200, 180, 140), size = Vector3.new(2, 4, 2), eyeColor = Color3.fromRGB(255, 200, 100), mat = Enum.Material.Fabric, accentColor = Color3.fromRGB(160, 140, 100), limbMat = Enum.Material.Leather },
+	scorpion = { shape = "block", color = Color3.fromRGB(180, 140, 80), size = Vector3.new(3, 1.5, 2), eyeColor = Color3.fromRGB(255, 50, 50), mat = Enum.Material.Sandstone, accentColor = Color3.fromRGB(120, 80, 40), limbMat = Enum.Material.Pebble },
+	ice_monster = { shape = "cylinder", color = Color3.fromRGB(100, 200, 255), size = Vector3.new(2.5, 4, 2.5), eyeColor = Color3.fromRGB(200, 255, 255), mat = Enum.Material.Glacier, accentColor = Color3.fromRGB(60, 140, 200), limbMat = Enum.Material.Ice },
+	fire_dragon = { shape = "cylinder", color = Color3.fromRGB(200, 60, 20), size = Vector3.new(3, 5, 3), eyeColor = Color3.fromRGB(255, 200, 50), mat = Enum.Material.CrackedLava, accentColor = Color3.fromRGB(255, 100, 0), limbMat = Enum.Material.Basalt },
+	shadow_knight = { shape = "cylinder", color = Color3.fromRGB(30, 20, 50), size = Vector3.new(2.5, 4.5, 2.5), eyeColor = Color3.fromRGB(150, 50, 255), mat = Enum.Material.CorrodedMetal, accentColor = Color3.fromRGB(80, 30, 100), limbMat = Enum.Material.DiamondPlate },
+	bat = { shape = "sphere", color = Color3.fromRGB(60, 40, 80), size = Vector3.new(1.5, 1, 1.5), eyeColor = Color3.fromRGB(255, 50, 50), mat = Enum.Material.Leather, accentColor = Color3.fromRGB(100, 60, 120), limbMat = Enum.Material.Fabric },
+	fire_elemental = { shape = "ball", color = Color3.fromRGB(255, 120, 20), size = Vector3.new(2.5, 2.5, 2.5), eyeColor = Color3.fromRGB(255, 255, 100), mat = Enum.Material.Neon, accentColor = Color3.fromRGB(255, 200, 50), limbMat = Enum.Material.Foil },
+	golem = { shape = "block", color = Color3.fromRGB(120, 110, 100), size = Vector3.new(3.5, 4, 3.5), eyeColor = Color3.fromRGB(100, 200, 255), mat = Enum.Material.Basalt, accentColor = Color3.fromRGB(80, 70, 60), limbMat = Enum.Material.Granite },
+	dark_wizard = { shape = "cylinder", color = Color3.fromRGB(50, 30, 80), size = Vector3.new(2, 4, 2), eyeColor = Color3.fromRGB(200, 50, 255), mat = Enum.Material.Rubber, accentColor = Color3.fromRGB(100, 40, 140), limbMat = Enum.Material.Glass },
 }
+
+-- Decorative accessory parts for humanoid enemies
+local enemyAccessories = {
+	goblin = { weapon = { size = Vector3.new(0.15, 1, 0.15), offset = Vector3.new(0.8, 0, 0), color = Color3.fromRGB(180, 160, 120), mat = Enum.Material.Metal } },
+	skeleton_warrior = { weapon = { size = Vector3.new(0.15, 1.2, 0.15), offset = Vector3.new(0.8, 0, 0), color = Color3.fromRGB(200, 180, 150), mat = Enum.Material.Metal } },
+	shadow_knight = { weapon = { size = Vector3.new(0.2, 1.4, 0.2), offset = Vector3.new(0.8, 0, 0), color = Color3.fromRGB(150, 50, 200), mat = Enum.Material.Neon } },
+	ice_monster = { weapon = { size = Vector3.new(0.3, 1, 0.3), offset = Vector3.new(0.8, 0.3, 0), color = Color3.fromRGB(180, 230, 255), mat = Enum.Material.Ice } },
+	fire_dragon = { weapon = { size = Vector3.new(0.25, 1.2, 0.25), offset = Vector3.new(0.9, 0.4, 0), color = Color3.fromRGB(255, 150, 50), mat = Enum.Material.Neon } },
+	dark_wizard = { weapon = { size = Vector3.new(0.15, 1.5, 0.15), offset = Vector3.new(0.7, 0.2, 0), color = Color3.fromRGB(100, 50, 150), mat = Enum.Material.Neon } },
+}
+
+function addAccessories(part, enemyType, size)
+	local accData = enemyAccessories[enemyType]
+	if not accData or not accData.weapon then return end
+	local w = accData.weapon
+	-- Create weapon part and weld it to the right side of the enemy
+	local weaponPart = Instance.new("Part")
+	weaponPart.Name = "Weapon"
+	weaponPart.Size = w.size
+	weaponPart.CFrame = part.CFrame * CFrame.new(w.offset.X, w.offset.Y, w.offset.Z)
+	weaponPart.Anchored = false
+	weaponPart.CanCollide = false
+	weaponPart.Locked = true
+	weaponPart.Color = w.color
+	weaponPart.Material = w.mat
+	weaponPart.Shape = Enum.PartType.Cylinder
+	weaponPart.Parent = part.Parent
+	
+	local weld = Instance.new("WeldConstraint")
+	weld.Part0 = part
+	weld.Part1 = weaponPart
+	weld.Parent = weaponPart	-- Small glow on weapon tip
+	local tip = Instance.new("Part")
+	tip.Name = "WeaponTip"
+	tip.Size = Vector3.new(0.3, 0.3, 0.3)
+	tip.CFrame = weaponPart.CFrame * CFrame.new(0, w.size.Y / 2 + 0.2, 0)
+	tip.Anchored = false
+	tip.CanCollide = false
+	tip.Color = w.color
+	tip.Material = Enum.Material.Neon
+	tip.Shape = Enum.PartType.Ball
+	local weld2 = Instance.new("WeldConstraint")
+	weld2.Part0 = weaponPart
+	weld2.Part1 = tip
+	weld2.Parent = tip
+	tip.Parent = part.Parent
+end
 
 function addEyeGlow(part, color, enemySize)
 	local eye1 = Instance.new("Part")
@@ -92,26 +138,28 @@ function decorateEnemyBody(part, enemyType, enemyData, vis)
 	local isBoss = enemyData.isBoss
 	local scale = isBoss and 2 or 1
 	
+	local limbMat = vis.limbMat or mat
+	
 	-- Build different body structures based on shape type
 	if vis.shape == "cylinder" then
 		-- Humanoid-type enemies (goblin, skeleton, mummy, etc.): add head + legs
 		-- Head (sphere on top)
 		local headSize = size * Vector3.new(0.5, 0.3, 0.5) * scale
-		attachLimb(part, headSize, Vector3.new(0, size.Y/2 + headSize.Y/2, 0), col, mat, Enum.PartType.Ball, "Head")
+		attachLimb(part, headSize, Vector3.new(0, size.Y/2 + headSize.Y/2, 0), col, limbMat, Enum.PartType.Ball, "Head")
 		
 		-- Left leg
 		local legSize = Vector3.new(0.3, 0.8, 0.3) * scale
-		attachLimb(part, legSize, Vector3.new(-size.X/4, -size.Y/2 - legSize.Y/2, 0), col, mat, Enum.PartType.Cylinder, "LeftLeg")
+		attachLimb(part, legSize, Vector3.new(-size.X/4, -size.Y/2 - legSize.Y/2, 0), col, limbMat, Enum.PartType.Cylinder, "LeftLeg")
 		-- Right leg
-		attachLimb(part, legSize, Vector3.new(size.X/4, -size.Y/2 - legSize.Y/2, 0), col, mat, Enum.PartType.Cylinder, "RightLeg")
+		attachLimb(part, legSize, Vector3.new(size.X/4, -size.Y/2 - legSize.Y/2, 0), col, limbMat, Enum.PartType.Cylinder, "RightLeg")
 		
 		-- Arms for specific types
 		if enemyType ~= "mummy" and enemyType ~= "ice_monster" then
 			local armSize = Vector3.new(0.25, 0.7, 0.25) * scale
 			-- Left arm
-			attachLimb(part, armSize, Vector3.new(-size.X/2 - armSize.X/2, size.Y/4, 0), col, mat, Enum.PartType.Cylinder, "LeftArm")
+			attachLimb(part, armSize, Vector3.new(-size.X/2 - armSize.X/2, size.Y/4, 0), col, limbMat, Enum.PartType.Cylinder, "LeftArm")
 			-- Right arm
-			attachLimb(part, armSize, Vector3.new(size.X/2 + armSize.X/2, size.Y/4, 0), col, mat, Enum.PartType.Cylinder, "RightArm")
+			attachLimb(part, armSize, Vector3.new(size.X/2 + armSize.X/2, size.Y/4, 0), col, limbMat, Enum.PartType.Cylinder, "RightArm")
 		end
 		
 	elseif vis.shape == "sphere" or vis.shape == "ball" then
@@ -122,7 +170,7 @@ function decorateEnemyBody(part, enemyType, enemyData, vis)
 				local angle = (i / 4) * math.pi * 2
 				local legSize = Vector3.new(0.2, 0.6, 0.2) * scale
 				local legOffset = Vector3.new(math.cos(angle) * size.X/2, -size.Y/2, math.sin(angle) * size.Z/2)
-				attachLimb(part, legSize, legOffset, vis.accentColor, mat, Enum.PartType.Cylinder, "Leg" .. i)
+				attachLimb(part, legSize, legOffset, vis.accentColor, limbMat, Enum.PartType.Cylinder, "Leg" .. i)
 			end
 		end
 		
@@ -140,7 +188,7 @@ function decorateEnemyBody(part, enemyType, enemyData, vis)
 		if enemyType == "scorpion" then
 			-- Tail
 			local tailSize = Vector3.new(0.3, 0.5, 0.3) * scale
-			local tail = attachLimb(part, tailSize, Vector3.new(0, 0.2, -size.Z/2 - tailSize.Z/2), vis.accentColor, mat, Enum.PartType.Cylinder, "Tail")
+			local tail = attachLimb(part, tailSize, Vector3.new(0, 0.2, -size.Z/2 - tailSize.Z/2), vis.accentColor, limbMat, Enum.PartType.Cylinder, "Tail")
 			-- Stinger
 			local stingerSize = Vector3.new(0.4, 0.4, 0.4) * scale
 			attachLimb(tail, stingerSize, Vector3.new(0, 0.3, -tailSize.Z/2 - 0.2), Color3.fromRGB(255, 100, 0), Enum.Material.Neon, Enum.PartType.Ball, "Stinger")
@@ -150,21 +198,21 @@ function decorateEnemyBody(part, enemyType, enemyData, vis)
 				local angle = (i / 6) * math.pi * 2
 				local legSize = Vector3.new(0.2, 0.4, 0.2) * scale
 				local legOffset = Vector3.new(math.cos(angle) * size.X/2 + 0.2, -size.Y/2, math.sin(angle) * size.Z/2 + 0.2)
-				attachLimb(part, legSize, legOffset, vis.accentColor, mat, Enum.PartType.Cylinder, "Leg" .. i)
+				attachLimb(part, legSize, legOffset, vis.accentColor, limbMat, Enum.PartType.Cylinder, "Leg" .. i)
 			end
 			
 		elseif enemyType == "golem" then
 			-- Head
 			local headSize = Vector3.new(1.2, 0.8, 1.2) * scale
-			attachLimb(part, headSize, Vector3.new(0, size.Y/2 + headSize.Y/2, 0), col, Enum.Material.Slate, Enum.PartType.Ball, "Head")
+			attachLimb(part, headSize, Vector3.new(0, size.Y/2 + headSize.Y/2, 0), col, limbMat, Enum.PartType.Ball, "Head")
 			-- Legs (sturdy)
 			local legSize = Vector3.new(0.6, 0.6, 0.6) * scale
-			attachLimb(part, legSize, Vector3.new(-0.8, -size.Y/2 - 0.3, 0), col, Enum.Material.Slate, Enum.PartType.Block, "LeftLeg")
-			attachLimb(part, legSize, Vector3.new(0.8, -size.Y/2 - 0.3, 0), col, Enum.Material.Slate, Enum.PartType.Block, "RightLeg")
+			attachLimb(part, legSize, Vector3.new(-0.8, -size.Y/2 - 0.3, 0), col, limbMat, Enum.PartType.Block, "LeftLeg")
+			attachLimb(part, legSize, Vector3.new(0.8, -size.Y/2 - 0.3, 0), col, limbMat, Enum.PartType.Block, "RightLeg")
 			-- Arms
 			local armSize = Vector3.new(0.8, 0.5, 0.5) * scale
-			attachLimb(part, armSize, Vector3.new(-size.X/2 - armSize.X/2, 0.5, 0), col, Enum.Material.Slate, Enum.PartType.Block, "LeftArm")
-			attachLimb(part, armSize, Vector3.new(size.X/2 + armSize.X/2, 0.5, 0), col, Enum.Material.Slate, Enum.PartType.Block, "RightArm")
+			attachLimb(part, armSize, Vector3.new(-size.X/2 - armSize.X/2, 0.5, 0), col, limbMat, Enum.PartType.Block, "LeftArm")
+			attachLimb(part, armSize, Vector3.new(size.X/2 + armSize.X/2, 0.5, 0), col, limbMat, Enum.PartType.Block, "RightArm")
 		end
 	end
 end
@@ -182,7 +230,7 @@ function spawnEnemyInZone(islandId, enemyType, spawnPos, index)
 	part.Name = enemyType .. "_" .. index
 	part.Size = enemyData.isBoss and vis.size * 2 or vis.size
 	part.Position = spawnPos
-	part.Anchored = false
+	part.Anchored = true
 	part.CanCollide = true
 	part.Locked = true
 	part.Color = vis.color
@@ -203,6 +251,9 @@ function spawnEnemyInZone(islandId, enemyType, spawnPos, index)
 	
 	-- Eyes
 	addEyeGlow(part, vis.eyeColor or Color3.fromRGB(255, 0, 0), part.Size)
+	
+	-- Accessories (weapons, etc.)
+	addAccessories(part, enemyType, part.Size)
 	
 	-- Accent band (visual distinction) - only on humanoids
 	local accent = Instance.new("Part")
@@ -320,6 +371,7 @@ function spawnEnemyInZone(islandId, enemyType, spawnPos, index)
 		data = enemyData,
 		hp = enemyData.health,
 		maxHp = enemyData.health,
+		originalColor = vis.color,
 		islandId = islandId,
 		spawnPos = spawnPos,
 		aggroTarget = nil,
