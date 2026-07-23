@@ -521,6 +521,9 @@ local shopGems = New("TextLabel", {
 	Parent = shopFrame,
 })
 
+-- Client currency tracking
+local myCurrency = { coins = 0, gems = 0 }
+
 -- Shop data
 local shopData = nil
 local getShopRF = ReplicatedStorage:FindFirstChild("GetShopData")
@@ -617,12 +620,6 @@ shopItemTab.MouseButton1Click:Connect(function()
 	shopWeaponTab.BackgroundColor3 = Color3.fromRGB(25, 25, 45)
 	shopWeaponTab.TextColor3 = Color3.fromRGB(180, 180, 190)
 	refreshShopDisplay("items")
-end)
-
--- Keyboard shortcut
-UserInputService.InputBegan:Connect(function(input, gp)
-	if gp then return end
-	if input.KeyCode == Enum.KeyCode.B then toggleShop() end
 end)
 
 -- == MINIMAP (top right) ==
@@ -925,7 +922,6 @@ local selectRemote = ReplicatedStorage:FindFirstChild("SelectCharacter")
 local spawnRemote = ReplicatedStorage:FindFirstChild("CharacterSpawned")
 local hudRemote = ReplicatedStorage:FindFirstChild("UpdateHUD")
 local lvlUpRemote = ReplicatedStorage:FindFirstChild("LevelUp")
-local myCurrency = { coins = 0, gems = 0 }
 local crystalRemote = ReplicatedStorage:FindFirstChild("CrystalCollected")
 
 if hudRemote then
@@ -1157,11 +1153,15 @@ local currentTarget = nil
 
 -- Update targeting reticle periodically (not every frame - every 0.1s is enough)
 local lastTargetUpdate = 0
-RunService.BindToRenderStep("TargetingUpdate", Enum.RenderPriority.Camera.Value - 1, function()
+-- Smooth reticle tween helper
+local reticleTween = nil
+local reticleCenterPos = UDim2.new(0.5, -20, 0.5, -20)
+
+RunService:BindToRenderStep("TargetingUpdate", Enum.RenderPriority.Camera.Value - 1, function()
 	local cam = workspace.CurrentCamera
 	if not cam then return end
 	
-	-- Only search for target every 5 frames to save performance
+	-- Only search for target every 0.1s
 	local now = tick()
 	if now - lastTargetUpdate > 0.1 then
 		lastTargetUpdate = now
@@ -1170,30 +1170,52 @@ RunService.BindToRenderStep("TargetingUpdate", Enum.RenderPriority.Camera.Value 
 	
 	local target = currentTarget
 	
-	-- Always keep reticle at center of screen, only highlight when target found
-	-- The reticle position is always center - we just change its appearance
-	aireticle.Position = UDim2.new(0.5, -20, 0.5, -20)
-	
-	if target then
-		local enemyData = target:GetAttribute("EnemyType") or ""
-		targetLabel.Text = "🎯 " .. enemyData
-		targetLabel.Visible = true
+	if target and target.Parent then
+		-- Project enemy world position to screen coordinates
+		local screenPos, onScreen = cam:WorldToViewportPoint(target.Position)
 		
-		-- Light up the dot and crosshair
-		reticleDot.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-		reticleDot.BackgroundTransparency = 0
-		reticleH.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-		reticleV.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
-		
-		-- Show boss label
-		if target:GetAttribute("IsBoss") then
-			targetLabel.Text = "👑 BOSS - " .. enemyData
-			targetLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
+		if onScreen then
+			-- Move reticle to track the enemy on screen
+			local targetPos = UDim2.new(0, screenPos.X - 20, 0, screenPos.Y - 20)
+			
+			-- Smoothly tween reticle toward target
+			if reticleTween then reticleTween:Cancel() end
+			reticleTween = TweenService:Create(aimReticle, TweenInfo.new(0.08, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Position = targetPos })
+			reticleTween:Play()
+			
+			-- Target info
+			local enemyData = target:GetAttribute("EnemyType") or ""
+			targetLabel.Text = "🎯 " .. enemyData
+			targetLabel.Position = UDim2.new(0, screenPos.X - 100, 0, screenPos.Y + 25)
+			targetLabel.Visible = true
+			
+			-- Light up reticle
+			reticleDot.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+			reticleDot.BackgroundTransparency = 0
+			reticleH.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+			reticleV.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+			
+			-- Show boss label
+			if target:GetAttribute("IsBoss") then
+				targetLabel.Text = "👑 BOSS - " .. enemyData
+				targetLabel.TextColor3 = Color3.fromRGB(255, 200, 50)
+			else
+				targetLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+			end
 		else
-			targetLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+			-- Enemy is off-screen, snap reticle to center
+			if reticleTween then reticleTween:Cancel() end
+			aimReticle.Position = reticleCenterPos
+			targetLabel.Visible = false
+			reticleDot.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+			reticleDot.BackgroundTransparency = 0.5
+			reticleH.BackgroundColor3 = colors.accent
+			reticleV.BackgroundColor3 = colors.accent
 		end
 	else
-		-- Dim reticle at center
+		-- No target — snap reticle back to center, dimmed
+		if reticleTween then reticleTween:Cancel() end
+		aimReticle.Position = reticleCenterPos
 		targetLabel.Visible = false
 		reticleDot.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 		reticleDot.BackgroundTransparency = 0.5
@@ -1204,6 +1226,69 @@ end)
 
 -- ============ SHARED ACTION FUNCTIONS ============
 -- These are called by BOTH button click handlers AND keyboard shortcuts
+
+local function createSwingBeam(originCF, targetPos, weaponColor)
+	-- Create a visible swing arc beam from origin toward target
+	local beamLen = (targetPos - originCF.Position).Magnitude
+	if beamLen < 1 then return end
+	
+	-- Create a temporary beam part
+	local beam = Instance.new("Part")
+	beam.Size = Vector3.new(0.4, 0.4, beamLen)
+	beam.CFrame = CFrame.lookAt(originCF.Position, targetPos) * CFrame.new(0, 0, -beamLen / 2)
+	beam.Color = weaponColor or Color3.fromRGB(255, 200, 100)
+	beam.Material = Enum.Material.Neon
+	beam.BrickColor = BrickColor.new(Color3.fromRGB(255, 200, 100))
+	beam.Transparency = 0.3
+	beam.Anchored = true
+	beam.CanCollide = false
+	beam.Parent = workspace
+	
+	-- Fade and shrink over 0.15s
+	for i = 1, 6 do
+		task.wait(0.025)
+		beam.Transparency = 0.3 + (i / 6) * 0.7
+		beam.Size = beam.Size * Vector3.new(0.85, 0.85, 1)
+		if not beam.Parent then break end
+	end
+	beam:Destroy()
+end
+
+local function createSwingArc(originPos, targetPos, isCrit)
+	-- Spark particles along the arc path
+	local midPoint = (originPos + targetPos) / 2 + Vector3.new(0, 3, 0)
+	
+	for i = 1, 8 do
+		local t = i / 8
+		local pos = originPos:Lerp(targetPos, t)
+		pos = pos + Vector3.new(
+			math.sin(t * math.pi) * 3 + math.random(-1, 1),
+			math.sin(t * math.pi) * 4 + math.random(-1, 1),
+			math.sin(t * math.pi) * 1.5 + math.random(-1, 1)
+		)
+		
+		local spark = Instance.new("Part")
+		spark.Size = Vector3.new(0.3, 0.3, 0.3)
+		spark.CFrame = CFrame.new(pos)
+		spark.Color = isCrit and Color3.fromRGB(255, 220, 50) or Color3.fromRGB(255, 180, 80)
+		spark.Material = Enum.Material.Neon
+		spark.Transparency = 0.2
+		spark.Anchored = true
+		spark.CanCollide = false
+		spark.Parent = workspace
+		
+		task.delay(0.05 * i, function()
+			for f = 1, 4 do
+				task.wait(0.025)
+				if spark and spark.Parent then
+					spark.Transparency = spark.Transparency + 0.2
+					spark.Size = spark.Size * 0.7
+				end
+			end
+			if spark and spark.Parent then spark:Destroy() end
+		end)
+	end
+end
 
 local function performAttack()
 	local dealRemote = ReplicatedStorage:FindFirstChild("DealDamage")
@@ -1237,33 +1322,127 @@ local function performAttack()
 		targetPart = findNearestEnemy()
 	end
 	
+	-- Determine where the attack goes (toward target or forward)
+	local attackTargetPos
+	local didHitEnemy = false
+	
 	if targetPart then
+		attackTargetPos = targetPart.Position
+		didHitEnemy = true
+		
 		-- Face the target
-		local lookCF = CFrame.lookAt(root.Position, targetPart.Position)
+		local lookCF = CFrame.lookAt(root.Position, attackTargetPos)
 		root.CFrame = CFrame.new(root.Position.X, root.Position.Y, root.Position.Z) * CFrame.Angles(0, (lookCF - lookCF.Position):ToOrientation(), 0)
 		
 		-- Fire the attack to server
 		dealRemote:FireServer(targetPart.Name, nil, targetPart:GetAttribute("EnemyType"))
-		
-		-- Weapon flash animation on the weapon handle
-		local weaponHandle = char:FindFirstChild("WeaponHandle")
-		if weaponHandle then
-			local originalColor = weaponHandle.Color
-			local originalSize = weaponHandle.Size
-			weaponHandle.Color = Color3.fromRGB(255, 255, 200)
-			weaponHandle.Size = originalSize * 1.2
-			task.delay(0.08, function()
-				if weaponHandle and weaponHandle.Parent then
-					weaponHandle.Color = originalColor
-					weaponHandle.Size = originalSize
-				end
-			end)
+	else
+		-- No enemy — swing forward (air attack)
+		attackTargetPos = root.Position + root.CFrame.LookVector * 10
+	end
+	
+	-- === VISUAL ATTACK EFFECTS ===
+	
+	-- 1. Swing beam (fast line from player to target)
+	local weaponData = Weapons[myAttackSpeed and "sword" or "sword"]
+	local beamColor = Color3.fromRGB(255, 220, 100)
+	-- Try to get actual weapon color data
+	for wid, wd in pairs(Weapons) do
+		if wd and wd.name and myAttackSpeed then
+			-- Use weapon's element to color the beam
+			if wd.element == "fire" then beamColor = Color3.fromRGB(255, 120, 50)
+			elseif wd.element == "dark" then beamColor = Color3.fromRGB(160, 80, 220)
+			elseif wd.element == "ice" then beamColor = Color3.fromRGB(100, 200, 255)
+			end
+			break
+		end
+	end
+	
+	coroutine.wrap(function()
+		createSwingBeam(root.CFrame, attackTargetPos, beamColor)
+	end)()
+	
+	-- 2. Spark arc along the swing path
+	coroutine.wrap(function()
+		createSwingArc(root.Position, attackTargetPos, false)
+	end)()
+	
+	-- 3. Weapon flash
+	local weaponHandle = char:FindFirstChild("WeaponHandle")
+	if weaponHandle then
+		local originalColor = weaponHandle.Color
+		local originalSize = weaponHandle.Size
+		weaponHandle.Color = Color3.fromRGB(255, 255, 200)
+		weaponHandle.Size = originalSize * 1.3
+		task.delay(0.08, function()
+			if weaponHandle and weaponHandle.Parent then
+				weaponHandle.Color = originalColor
+				weaponHandle.Size = originalSize
+			end
+		end)
+	end
+	
+	-- 4. Screen flash pulse (subtle)
+	local flashFrame = Instance.new("Frame")
+	flashFrame.Size = UDim2.new(1, 0, 1, 0)
+	flashFrame.BackgroundColor3 = beamColor
+	flashFrame.BackgroundTransparency = 0.85
+	flashFrame.BorderSizePixel = 0
+	flashFrame.ZIndex = 100
+	flashFrame.Parent = screenGui
+	task.delay(0.05, function()
+		for i = 1, 4 do
+			task.wait(0.025)
+			flashFrame.BackgroundTransparency = flashFrame.BackgroundTransparency + 0.04
+		end
+		if flashFrame and flashFrame.Parent then flashFrame:Destroy() end
+	end)
+	
+	-- 5. Hit impact indicator (red flash ring when hitting enemy)
+	if didHitEnemy then
+		local cam = workspace.CurrentCamera
+		if cam then
+			local screenPos, onScreen = cam:WorldToViewportPoint(targetPart.Position)
+			if onScreen then
+				-- Create a hit cross indicator at the impact screen position
+				local hitMarker = Instance.new("Frame")
+				hitMarker.Size = UDim2.new(0, 16, 0, 16)
+				hitMarker.Position = UDim2.new(0, screenPos.X - 8, 0, screenPos.Y - 8)
+				hitMarker.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				hitMarker.BackgroundTransparency = 0.3
+				hitMarker.BorderSizePixel = 0
+				hitMarker.ZIndex = 15
+				hitMarker.Parent = hud
+				
+				-- Add a quick rotation
+				local rotationTween = TweenService:Create(hitMarker, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Rotation = 45 })
+				rotationTween:Play()
+				
+				task.delay(0.05, function()
+					for i = 1, 6 do
+						task.wait(0.025)
+						if hitMarker and hitMarker.Parent then
+							hitMarker.BackgroundTransparency = hitMarker.BackgroundTransparency + 0.12
+							hitMarker.Size = UDim2.new(0, 16 + i * 3, 0, 16 + i * 3)
+							hitMarker.Position = UDim2.new(0, screenPos.X - 8 - i * 1.5, 0, screenPos.Y - 8 - i * 1.5)
+						end
+					end
+					if hitMarker and hitMarker.Parent then hitMarker:Destroy() end
+				end)
+			end
 		end
 		
-		hintText.Text = "⚔️ Attacked!"
+		hintText.Text = "⚔️ Hit!"
 		task.delay(0.5, function()
-			if hintText and hintText.Text == "⚔️ Attacked!" then
+			if hintText and hintText.Text == "⚔️ Hit!" then
 				hintText.Text = "Use abilities and attack to defeat enemies!"
+			end
+		end)
+	else
+		hintText.Text = "⚔️ Swing!"
+		task.delay(0.5, function()
+			if hintText and hintText.Text == "⚔️ Swing!" then
+				hintText.Text = "Get close to enemies to attack!"
 			end
 		end)
 	end
@@ -1352,6 +1531,8 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 		performAbility()
 	elseif key == Enum.KeyCode.E then
 		performInteract()
+	elseif key == Enum.KeyCode.B then
+		toggleShop()
 	elseif key == Enum.KeyCode.LeftShift or key == Enum.KeyCode.RightShift then
 		shiftHeld = true
 		performSprintStart()
