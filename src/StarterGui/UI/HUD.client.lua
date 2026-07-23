@@ -1112,6 +1112,7 @@ end
 -- Attack cooldown tracking
 local lastAttackTime = 0
 local myAttackSpeed = 0.8 -- base, updated on character spawn
+local myWeaponId = "sword" -- tracks the player's equipped weapon ID
 
 -- Update local attack speed when character spawns (in the spawnRemote handler below)
 local function getWeaponCooldown()
@@ -1344,17 +1345,15 @@ local function performAttack()
 	-- === VISUAL ATTACK EFFECTS ===
 	
 	-- 1. Swing beam (fast line from player to target)
-	local weaponData = Weapons[myAttackSpeed and "sword" or "sword"]
 	local beamColor = Color3.fromRGB(255, 220, 100)
-	-- Try to get actual weapon color data
-	for wid, wd in pairs(Weapons) do
-		if wd and wd.name and myAttackSpeed then
-			-- Use weapon's element to color the beam
-			if wd.element == "fire" then beamColor = Color3.fromRGB(255, 120, 50)
-			elseif wd.element == "dark" then beamColor = Color3.fromRGB(160, 80, 220)
-			elseif wd.element == "ice" then beamColor = Color3.fromRGB(100, 200, 255)
-			end
-			break
+	-- Use player's actual equipped weapon for element-colored beam
+	local equippedWeapon = Weapons[myWeaponId]
+	if equippedWeapon then
+		local elem = equippedWeapon.element
+		if elem == "fire" then beamColor = Color3.fromRGB(255, 120, 50)
+		elseif elem == "dark" then beamColor = Color3.fromRGB(160, 80, 220)
+		elseif elem == "ice" then beamColor = Color3.fromRGB(100, 200, 255)
+		elseif elem == "electric" then beamColor = Color3.fromRGB(120, 220, 255)
 		end
 	end
 	
@@ -1576,9 +1575,10 @@ local myCharacterId = "warrior"
 if spawnRemote then
 	spawnRemote.OnClientEvent:Connect(function(charData)
 		myCharacterId = charData.id or "warrior"
-		-- Update local attack speed from weapon data
+		-- Update local attack speed and weapon ID from weapon data
 		local weaponId = charData.weapon or charData.weaponId
 		if weaponId then
+			myWeaponId = weaponId
 			local wData = Weapons[weaponId]
 			if wData then
 				myAttackSpeed = wData.attackSpeed or 0.8
