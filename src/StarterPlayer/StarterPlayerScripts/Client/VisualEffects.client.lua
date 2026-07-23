@@ -10,15 +10,19 @@ local Weapons = ReplicatedStorage and require(ReplicatedStorage.Shared.Weapons) 
 
 function playSoundAtPosition(soundId, position)
 	if not soundId or not position then return end
+	local anchor = Instance.new("Part")
+	anchor.Anchored = true
+	anchor.CanCollide = false
+	anchor.Transparency = 1
+	anchor.Size = Vector3.new(1, 1, 1)
+	anchor.Position = position
+	anchor.Parent = Workspace
 	local sound = Instance.new("Sound")
 	sound.SoundId = soundId
-	sound.Position = position
 	sound.Volume = 0.6
-	sound.PlayOnRemove = true
-	sound.Parent = Workspace
-	task.delay(0.1, function()
-		sound:Destroy()
-	end)
+	sound.Parent = anchor
+	sound:Play()
+	Debris:AddItem(anchor, 7)
 end
 
 -- Listen for PlaySound remote from server
