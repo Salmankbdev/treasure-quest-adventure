@@ -19,7 +19,7 @@ local Events = {
 }
 
 -- Create PlaySound event for client-side sound playback
-if not PlaySound then
+if not Events.PlaySound then
 	Events.PlaySound = Instance.new("RemoteEvent")
 	Events.PlaySound.Name = "PlaySound"
 	Events.PlaySound.Parent = ReplicatedStorage
