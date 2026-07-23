@@ -196,168 +196,77 @@ function createIslandZone(islandData, index)
 end
 
 function decorateIsland(islandId, center)
+	-- Helper: random position around island center
+	local function randPos(minR, maxR)
+		local angle = math.random() * math.pi * 2
+		local radius = minR + math.random() * (maxR - minR)
+		return center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+	end
+	local function randPosY(minR, maxR, minY, maxY)
+		local p = randPos(minR, maxR)
+		return Vector3.new(p.X, minY + math.random() * (maxY - minY), p.Z)
+	end
+
 	if islandId == "forest" then
-		-- Forest trees
-		for i = 1, 15 do
-			local angle = math.random() * math.pi * 2
-			local radius = 10 + math.random() * 80
-			decorateTree(center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius), nil, Color3.fromRGB(40, 140, 40))
-		end
-		-- Forest bushes
-		for i = 1, 8 do
-			local angle = math.random() * math.pi * 2
-			local radius = 15 + math.random() * 70
-			decorateBush(center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius))
-		end
-		-- Forest rocks
-		for i = 1, 6 do
-			local angle = math.random() * math.pi * 2
-			local radius = 20 + math.random() * 70
-			decorateRock(center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius))
-		end
-		-- Flowers
-		for i = 1, 12 do
-			local angle = math.random() * math.pi * 2
-			local radius = 5 + math.random() * 85
-			decorateFlower(center + Vector3.new(math.cos(angle) * radius, 0.5, math.sin(angle) * radius))
-		end
-		
+		for i = 1, 20 do decorateTree(randPos(10, 85), nil, Color3.fromRGB(40, 140, 40)) end
+		for i = 1, 12 do decorateBush(randPos(15, 80)) end
+		for i = 1, 10 do decorateRock(randPos(20, 80)) end
+		for i = 1, 15 do decorateFlower(randPosY(5, 90, 0.3, 0.8)) end
+
 	elseif islandId == "desert" then
-		-- Desert pillars
-		for i = 1, 8 do
-			local angle = math.random() * math.pi * 2
-			local radius = 20 + math.random() * 70
-			decoratePillar(center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius))
-		end
-		-- Desert rocks
-		for i = 1, 10 do
-			local angle = math.random() * math.pi * 2
-			local radius = 10 + math.random() * 80
-			local size = 1.5 + math.random() * 3
-			local rock = Instance.new("Part")
-			rock.Name = "DesertRock"
-			rock.Size = Vector3.new(size, size * 0.5, size)
-			rock.Position = center + Vector3.new(math.cos(angle) * radius, 0.5, math.sin(angle) * radius)
-			rock.Anchored = true
-			rock.Locked = true
-			rock.Color = Color3.fromRGB(160 + math.random(40), 140 + math.random(30), 100 + math.random(30))
-			rock.Material = Enum.Material.Sandstone
-			rock.Shape = Enum.PartType.Ball
-			rock.Parent = workspace
-		end
-		-- Cacti
+		for i = 1, 8 do decoratePillar(randPos(20, 70)) end
+		for i = 1, 15 do decorateRock(randPos(10, 85)) end
 		for i = 1, 6 do
-			local angle = math.random() * math.pi * 2
-			local radius = 15 + math.random() * 75
-			local pos = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+			local pos = randPos(15, 75)
 			local trunk = Instance.new("Part")
 			trunk.Name = "Cactus"
 			trunk.Size = Vector3.new(0.8, 2 + math.random() * 2, 0.8)
 			trunk.Position = pos + Vector3.new(0, 1 + math.random(), 0)
-			trunk.Anchored = true
-			trunk.Locked = true
+			trunk.Anchored = true; trunk.Locked = true
 			trunk.Color = Color3.fromRGB(50, 140, 50)
 			trunk.Material = Enum.Material.SmoothPlastic
 			trunk.Parent = workspace
 		end
-		
+
 	elseif islandId == "snow_mountain" then
-		-- Snowy pine trees
-		for i = 1, 12 do
-			local angle = math.random() * math.pi * 2
-			local radius = 10 + math.random() * 80
-			local pos = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-			local trunk = Instance.new("Part")
-			trunk.Name = "SnowTreeTrunk"
-			trunk.Size = Vector3.new(0.5, 3, 0.5)
-			trunk.Position = pos + Vector3.new(0, 1.5, 0)
-			trunk.Anchored = true
-			trunk.Locked = true
-			trunk.Color = Color3.fromRGB(80, 60, 40)
-			trunk.Material = Enum.Material.Wood
-			trunk.Parent = workspace
-			local foliage = Instance.new("Part")
-			foliage.Name = "SnowTreeFoliage"
-			foliage.Size = Vector3.new(4, 3, 4)
-			foliage.Position = pos + Vector3.new(0, 4.5, 0)
-			foliage.Anchored = true
-			foliage.Locked = true
-			foliage.Color = Color3.fromRGB(200, 215, 230)
-			foliage.Material = Enum.Material.Snow
-			foliage.Shape = Enum.PartType.Ball
-			foliage.Parent = workspace
-		end
-		-- Ice crystals
+		for i = 1, 15 do decorateTree(randPos(10, 85), nil, Color3.fromRGB(200, 215, 230)) end
+		for i = 1, 8 do decorateRock(randPos(15, 80)) end
 		for i = 1, 8 do
-			local angle = math.random() * math.pi * 2
-			local radius = 15 + math.random() * 75
-			local pos = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+			local pos = randPos(15, 75)
 			local crystal = Instance.new("Part")
 			crystal.Name = "IceCrystal"
 			crystal.Size = Vector3.new(0.6, 1.5 + math.random(), 0.6)
 			crystal.Position = pos + Vector3.new(0, 0.75 + math.random() * 0.5, 0)
-			crystal.Anchored = true
-			crystal.Locked = true
+			crystal.Anchored = true; crystal.Locked = true
 			crystal.Color = Color3.fromRGB(180, 220, 255)
 			crystal.Material = Enum.Material.Ice
 			crystal.Parent = workspace
-			-- Glow particle
 			local p = Instance.new("ParticleEmitter")
-			p.Rate = 3
-			p.Lifetime = NumberRange.new(0.5, 1)
-			p.Speed = NumberRange.new(0.5, 1.5)
-			p.SpreadAngle = Vector2.new(30, 30)
+			p.Rate = 3; p.Lifetime = NumberRange.new(0.5, 1)
+			p.Speed = NumberRange.new(0.5, 1.5); p.SpreadAngle = Vector2.new(30, 30)
 			p.Color = ColorSequence.new(Color3.fromRGB(180, 220, 255))
-			p.Texture = "rbxassetid://2842055869"
-			p.Enabled = true
-			p.Parent = crystal
+			p.Texture = "rbxassetid://2842055869"; p.Enabled = true; p.Parent = crystal
 		end
-		
+
 	elseif islandId == "volcano" then
-		-- Lava pools
 		for i = 1, 5 do
-			local angle = math.random() * math.pi * 2
-			local radius = 15 + math.random() * 60
-			local pos = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+			local pos = randPos(15, 60)
 			local lava = Instance.new("Part")
 			lava.Name = "LavaPool"
 			lava.Size = Vector3.new(6 + math.random() * 4, 0.5, 5 + math.random() * 4)
 			lava.Position = pos + Vector3.new(0, -0.25, 0)
-			lava.Anchored = true
-			lava.Locked = true
+			lava.Anchored = true; lava.Locked = true
 			lava.Color = Color3.fromRGB(255, 100, 0)
-			lava.Material = Enum.Material.Neon
-			lava.Parent = workspace
-			-- Lava particles
+			lava.Material = Enum.Material.Neon; lava.Parent = workspace
 			local p = Instance.new("ParticleEmitter")
-			p.Rate = 10
-			p.Lifetime = NumberRange.new(0.5, 1.5)
-			p.Speed = NumberRange.new(1, 2)
-			p.SpreadAngle = Vector2.new(30, 30)
+			p.Rate = 10; p.Lifetime = NumberRange.new(0.5, 1.5)
+			p.Speed = NumberRange.new(1, 2); p.SpreadAngle = Vector2.new(30, 30)
 			p.Color = ColorSequence.new(Color3.fromRGB(255, 100, 0))
-			p.Texture = "rbxassetid://2842055869"
-			p.Enabled = true
-			p.Parent = lava
+			p.Texture = "rbxassetid://2842055869"; p.Enabled = true; p.Parent = lava
 		end
-		-- Volcanic rocks
-		for i = 1, 12 do
-			local angle = math.random() * math.pi * 2
-			local radius = 10 + math.random() * 80
-			local size = 1 + math.random() * 2.5
-			local rock = Instance.new("Part")
-			rock.Name = "VolcanicRock"
-			rock.Size = Vector3.new(size, size * 0.7, size)
-			rock.Position = center + Vector3.new(math.cos(angle) * radius, 0.5, math.sin(angle) * radius)
-			rock.Anchored = true
-			rock.Locked = true
-			rock.Color = Color3.fromRGB(40 + math.random(20), 30 + math.random(20), 30 + math.random(20))
-			rock.Material = Enum.Material.Slate
-			rock.Shape = Enum.PartType.Ball
-			rock.Parent = workspace
-		end
-		
+		for i = 1, 15 do decorateRock(randPos(10, 85)) end
+
 	elseif islandId == "dark_castle" then
-		-- Castle walls
 		for i = 1, 8 do
 			local angle = (i / 8) * math.pi * 2
 			local radius = 40
@@ -365,77 +274,53 @@ function decorateIsland(islandId, center)
 			wall.Name = "CastleWall"
 			wall.Size = Vector3.new(2, 8, 15)
 			wall.Position = center + Vector3.new(math.cos(angle) * radius, 4, math.sin(angle) * radius)
-			wall.Anchored = true
-			wall.Locked = true
+			wall.Anchored = true; wall.Locked = true
 			wall.Color = Color3.fromRGB(40, 35, 50)
 			wall.Material = Enum.Material.Slate
-			wall.CFrame = CFrame.lookAt(wall.Position, center)
-			wall.Parent = workspace
-			-- Torches on walls
-			if i % 2 == 0 then
-				decorateTorch(wall.Position + Vector3.new(0, 4, 2))
-			end
+			wall.CFrame = CFrame.lookAt(wall.Position, center); wall.Parent = workspace
+			if i % 2 == 0 then decorateTorch(wall.Position + Vector3.new(0, 4, 2)) end
 		end
-		-- Dark pillars
-		for i = 1, 6 do
-			local angle = math.random() * math.pi * 2
-			local radius = 20 + math.random() * 30
-			decoratePillar(center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius))
-		end
-		-- Floor torches
+		for i = 1, 8 do decoratePillar(randPos(20, 45)) end
 		for i = 1, 4 do
 			local angle = (i / 4) * math.pi * 2
 			decorateTorch(center + Vector3.new(math.cos(angle) * 25, 0, math.sin(angle) * 25))
 		end
-		
+
 	elseif islandId == "crystal_cave" then
-		-- Large crystals
+		local crystalColors = {
+			Color3.fromRGB(100, 200, 255), Color3.fromRGB(200, 100, 255),
+			Color3.fromRGB(255, 200, 100), Color3.fromRGB(100, 255, 200)
+		}
 		for i = 1, 10 do
-			local angle = math.random() * math.pi * 2
-			local radius = 15 + math.random() * 75
-			local pos = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-			local colors = {Color3.fromRGB(100, 200, 255), Color3.fromRGB(200, 100, 255), Color3.fromRGB(255, 200, 100), Color3.fromRGB(100, 255, 200)}
-			local c = colors[math.random(#colors)]
+			local pos = randPos(15, 75)
+			local c = crystalColors[math.random(#crystalColors)]
 			local height = 2 + math.random() * 4
 			local crystal = Instance.new("Part")
 			crystal.Name = "Crystal"
 			crystal.Size = Vector3.new(0.8, height, 0.8)
 			crystal.Position = pos + Vector3.new(0, height / 2, 0)
-			crystal.Anchored = true
-			crystal.Locked = true
-			crystal.Color = c
-			crystal.Material = Enum.Material.Glass
-			crystal.Parent = workspace
-			-- Crystal glow
+			crystal.Anchored = true; crystal.Locked = true
+			crystal.Color = c; crystal.Material = Enum.Material.Glass; crystal.Parent = workspace
 			local p = Instance.new("ParticleEmitter")
-			p.Rate = 5
-			p.Lifetime = NumberRange.new(0.5, 1)
-			p.Speed = NumberRange.new(0.5, 1.5)
-			p.SpreadAngle = Vector2.new(20, 20)
-			p.Color = ColorSequence.new(c)
-			p.Texture = "rbxassetid://2842055869"
-			p.Enabled = true
-			p.Parent = crystal
+			p.Rate = 5; p.Lifetime = NumberRange.new(0.5, 1)
+			p.Speed = NumberRange.new(0.5, 1.5); p.SpreadAngle = Vector2.new(20, 20)
+			p.Color = ColorSequence.new(c); p.Texture = "rbxassetid://2842055869"
+			p.Enabled = true; p.Parent = crystal
 		end
-		-- Glowing mushrooms
 		for i = 1, 8 do
-			local angle = math.random() * math.pi * 2
-			local radius = 20 + math.random() * 60
-			local pos = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+			local pos = randPos(20, 65)
 			local mushroom = Instance.new("Part")
 			mushroom.Name = "GlowMushroom"
 			mushroom.Size = Vector3.new(1.5, 0.5, 1.5)
 			mushroom.Position = pos + Vector3.new(0, 0.25, 0)
-			mushroom.Anchored = true
-			mushroom.Locked = true
+			mushroom.Anchored = true; mushroom.Locked = true
 			mushroom.Color = Color3.fromRGB(50, 200, 150)
 			mushroom.Material = Enum.Material.Neon
-			mushroom.Shape = Enum.PartType.Ball
-			mushroom.Parent = workspace
+			mushroom.Shape = Enum.PartType.Ball; mushroom.Parent = workspace
 		end
-		
+		for i = 1, 8 do decorateRock(randPos(10, 80)) end
+
 	elseif islandId == "sky_temple" then
-		-- Floating islands / clouds
 		for i = 1, 3 do
 			local angle = math.random() * math.pi * 2
 			local radius = 25 + math.random() * 40
@@ -444,46 +329,24 @@ function decorateIsland(islandId, center)
 			cloud.Name = "CloudPlatform"
 			cloud.Size = Vector3.new(15 + math.random() * 10, 2, 12 + math.random() * 8)
 			cloud.Position = center + Vector3.new(math.cos(angle) * radius, height, math.sin(angle) * radius)
-			cloud.Anchored = true
-			cloud.Locked = true
+			cloud.Anchored = true; cloud.Locked = true
 			cloud.Color = Color3.fromRGB(200, 200, 220)
-			cloud.Material = Enum.Material.Limestone
-			cloud.Parent = workspace
-			-- Cloud border glow
+			cloud.Material = Enum.Material.Limestone; cloud.Parent = workspace
 			local border = Instance.new("Part")
 			border.Name = "CloudGlow"
 			border.Size = cloud.Size + Vector3.new(3, 1, 3)
 			border.Position = cloud.Position
-			border.Anchored = true
-			border.Locked = true
+			border.Anchored = true; border.Locked = true
 			border.Color = Color3.fromRGB(180, 180, 255)
 			border.Material = Enum.Material.Neon
-			border.Transparency = 0.7
-			border.Parent = workspace
+			border.Transparency = 0.7; border.Parent = workspace
 		end
-		-- Temple pillars
-		for i = 1, 6 do
-			local angle = (i / 6) * math.pi * 2
-			local radius = 25
-			local pos = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
-			local pillar = Instance.new("Part")
-			pillar.Name = "TemplePillar"
-			pillar.Size = Vector3.new(2, 10, 2)
-			pillar.Position = pos + Vector3.new(0, 5, 0)
-			pillar.Anchored = true
-			pillar.Locked = true
-			pillar.Color = Color3.fromRGB(180, 170, 150)
-			pillar.Material = Enum.Material.Limestone
-			pillar.Parent = workspace
-		end
-		-- Wind particles (ambient)
+		for i = 1, 8 do decoratePillar(randPos(15, 35)) end
 		local windEmitter = Instance.new("Part")
 		windEmitter.Name = "WindParticles"
 		windEmitter.Size = Vector3.new(1, 1, 1)
 		windEmitter.Position = center
-		windEmitter.Anchored = true
-		windEmitter.CanCollide = false
-		windEmitter.Transparency = 1
+		windEmitter.Anchored = true; windEmitter.CanCollide = false; windEmitter.Transparency = 1
 		windEmitter.Parent = workspace
 		local p = Instance.new("ParticleEmitter")
 		p.Rate = 15

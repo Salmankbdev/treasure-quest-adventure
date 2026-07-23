@@ -1182,7 +1182,7 @@ RunService:BindToRenderStep("TargetingUpdate", Enum.RenderPriority.Camera.Value 
 	local target = currentTarget
 	
 	-- Reticle always stays at center — just changes appearance
-	aireticle.Position = UDim2.new(0.5, -20, 0.5, -20)
+	aimReticle.Position = UDim2.new(0.5, -20, 0.5, -20)
 	targetLabel.Position = UDim2.new(0.5, -100, 0.5, 25)
 	
 	if target and target.Parent then
