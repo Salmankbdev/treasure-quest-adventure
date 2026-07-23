@@ -555,6 +555,7 @@ local function refreshShopDisplay(tab)
 		local canAfford = (currency == "coins" and coins >= price) or (currency == "gems" and gems >= price)
 		local btn = New("TextButton", {
 			Size = UDim2.new(1, 0, 0, 48),
+			Position = UDim2.new(0, 0, 0, sy),
 			BackgroundColor3 = Color3.fromRGB(25, 25, 45),
 			BorderSizePixel = 0,
 			Parent = shopList,
@@ -802,14 +803,15 @@ if getIslands then
 	local islands = getIslands:InvokeServer()
 	if islands then
 		local islY = 0
-		for _, islData in ipairs(islands) do
-			islY = islY + 34
-			local islBtn = New("TextButton", { 
-				Size = UDim2.new(1, 0, 0, 34), 
-				BackgroundColor3 = Color3.fromRGB(20, 20, 40), 
-				BorderSizePixel = 0, 
-				Parent = islandList,
-			})
+	for _, islData in ipairs(islands) do
+		islY = islY + 34
+		local islBtn = New("TextButton", { 
+			Size = UDim2.new(1, 0, 0, 34), 
+			Position = UDim2.new(0, 0, 0, islY - 34),
+			BackgroundColor3 = Color3.fromRGB(20, 20, 40), 
+			BorderSizePixel = 0, 
+			Parent = islandList,
+		})
 			islBtn.MouseEnter:Connect(function()
 				islBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 70)
 			end)
@@ -995,6 +997,7 @@ for _, charData in pairs(Characters) do
 	csY = csY + 72
 	local btn = New("TextButton", {
 		Size = UDim2.new(1, 0, 0, 72),
+		Position = UDim2.new(0, 0, 0, csY - 72),
 		BackgroundColor3 = Color3.fromRGB(25, 25, 45),
 		BorderSizePixel = 0,
 		Parent = csList,

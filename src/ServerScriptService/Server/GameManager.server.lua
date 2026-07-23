@@ -136,7 +136,7 @@ Events.TeleportToIsland.OnServerEvent:Connect(function(player, islandId)
 					
 					-- Play teleport sound
 					if Events.PlaySound then
-						Events.PlaySound:FireClient(player, "rbxassetid://4712378717", spawnPos)
+						Events.PlaySound:FireClient(player, "rbxassetid://161006044", spawnPos)
 					end
 					
 					print("[GameManager] Teleported " .. player.Name .. " to " .. islandId)
@@ -196,7 +196,7 @@ function _G.awardXP(player, amount)
 			if char then
 				local root = char:FindFirstChild("HumanoidRootPart")
 				if root then
-					Events.PlaySound:FireClient(player, "rbxassetid://4712383709", root.Position)
+					Events.PlaySound:FireClient(player, "rbxassetid://138232555", root.Position)
 				end
 			end
 		end

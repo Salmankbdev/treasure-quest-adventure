@@ -141,7 +141,7 @@ if attackEffectRemote then
 		createHitImpact(hitPosition, weaponType or "sword", false)
 		
 		-- Play hit sound locally for immediate feedback
-		playSoundAtPosition("rbxassetid://4712381813", hitPosition)
+		playSoundAtPosition("rbxassetid://160005893", hitPosition)
 	end)
 end
 
@@ -335,24 +335,24 @@ abActivated.OnClientEvent:Connect(function(ability)
 	if ability.effect == "damage_boost" then
 		createExplosion(pos, Color3.fromRGB(255, 80, 80), 6, 1.5)
 		createRing(pos, Color3.fromRGB(255, 150, 50), 12, 8)
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "aoe_attack" then
 		createRing(pos, Color3.fromRGB(100, 255, 100), 20, 14)
 		createExplosion(pos + Vector3.new(0, 5, 0), Color3.fromRGB(80, 200, 80), 4, 1)
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "massive_damage" then
 		createExplosion(pos, Color3.fromRGB(255, 100, 0), 10, 2)
 		createRing(pos, Color3.fromRGB(255, 200, 50), 16, 12)
 		local dir = root.CFrame.LookVector
 		createBeam(pos, pos + dir * 20, Color3.fromRGB(255, 150, 0))
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "teleport_strike" then
 		createTeleportTrail(pos, pos + root.CFrame.LookVector * 8)
 		createExplosion(pos + root.CFrame.LookVector * 8, Color3.fromRGB(60, 60, 100), 5, 1)
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "reveal_treasure" then
 		createRing(pos, Color3.fromRGB(255, 200, 50), 24, 20)
@@ -362,12 +362,12 @@ abActivated.OnClientEvent:Connect(function(ability)
 		createHealGlow(char)
 		createRing(pos, Color3.fromRGB(255, 255, 200), 16, 12)
 		createExplosion(pos, Color3.fromRGB(255, 255, 150), 5, 1.5)
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "thorn_vines" then
 		createPoisonCloud(pos)
 		createRing(pos, Color3.fromRGB(50, 180, 50), 12, 16)
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "berserk_mode" then
 		createExplosion(pos, Color3.fromRGB(180, 0, 0), 8, 2)
@@ -385,7 +385,7 @@ abActivated.OnClientEvent:Connect(function(ability)
 			p.Parent = workspace
 			Debris:AddItem(p, 1.2)
 		end
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "cannon_barrage" then
 		createExplosion(pos, Color3.fromRGB(255, 150, 50), 12, 2)
@@ -397,7 +397,7 @@ abActivated.OnClientEvent:Connect(function(ability)
 				createExplosion(pos + offset, Color3.fromRGB(255, 100, 0), 4, 1)
 			end)
 		end
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "blade_storm" then
 		local dir = root.CFrame.LookVector
@@ -410,7 +410,7 @@ abActivated.OnClientEvent:Connect(function(ability)
 			end)
 		end
 		createRing(pos, Color3.fromRGB(255, 220, 180), 16, 12)
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 		
 	elseif ability.effect == "blood_drain" then
 		createExplosion(pos, Color3.fromRGB(140, 20, 40), 8, 2)
@@ -430,7 +430,7 @@ abActivated.OnClientEvent:Connect(function(ability)
 			p.Parent = workspace
 			Debris:AddItem(p, 1.5)
 		end
-		playSoundAtPosition("rbxassetid://4712381194", pos)
+		playSoundAtPosition("rbxassetid://130844619", pos)
 	end
 end)
 

@@ -10,7 +10,7 @@ return {
 		element = "physical",
 		critChance = 0.1,
 		critMultiplier = 1.5,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Iron Sword", emoji = "⚔️", damage = 15, critChance = 0.1 },
 			{ name = "Steel Sword", emoji = "🗡️", damage = 22, critChance = 0.12 },
@@ -32,7 +32,7 @@ return {
 		element = "physical",
 		critChance = 0.2,
 		critMultiplier = 2,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Short Bow", emoji = "🏹", damage = 12, critChance = 0.2 },
 			{ name = "Longbow", emoji = "🎯", damage = 18, critChance = 0.22 },
@@ -54,7 +54,7 @@ return {
 		element = "fire",
 		critChance = 0.05,
 		critMultiplier = 3,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Apprentice Staff", emoji = "🔮", damage = 20, critChance = 0.05 },
 			{ name = "Crystal Staff", emoji = "💎", damage = 30, critChance = 0.07 },
@@ -76,7 +76,7 @@ return {
 		element = "physical",
 		critChance = 0.15,
 		critMultiplier = 2,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Stone Hammer", emoji = "🔨", damage = 25, critChance = 0.15 },
 			{ name = "War Hammer", emoji = "⚒️", damage = 35, critChance = 0.17 },
@@ -98,7 +98,7 @@ return {
 		element = "physical",
 		critChance = 0.12,
 		critMultiplier = 1.8,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Wooden Spear", emoji = "🔱", damage = 18, critChance = 0.12 },
 			{ name = "Iron Spear", emoji = "⚔️", damage = 26, critChance = 0.14 },
@@ -120,7 +120,7 @@ return {
 		element = "physical",
 		critChance = 0.35,
 		critMultiplier = 3,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Bone Dagger", emoji = "🗡️", damage = 8, critChance = 0.35 },
 			{ name = "Iron Dagger", emoji = "🔪", damage = 14, critChance = 0.38 },
@@ -142,7 +142,7 @@ return {
 		element = "physical",
 		critChance = 0.08,
 		critMultiplier = 2.5,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Hand Axe", emoji = "🪓", damage = 30, critChance = 0.08 },
 			{ name = "Battle Axe", emoji = "⛏️", damage = 42, critChance = 0.1 },
@@ -164,7 +164,7 @@ return {
 		element = "physical",
 		critChance = 0.15,
 		critMultiplier = 2.5,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Light Crossbow", emoji = "🎯", damage = 20, critChance = 0.15 },
 			{ name = "Heavy Crossbow", emoji = "💘", damage = 30, critChance = 0.17 },
@@ -186,7 +186,7 @@ return {
 		element = "dark",
 		critChance = 0.08,
 		critMultiplier = 2.8,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Bone Staff", emoji = "💀", damage = 22, critChance = 0.08 },
 			{ name = "Soul Staff", emoji = "👻", damage = 33, critChance = 0.1 },
@@ -209,7 +209,7 @@ return {
 		element = "physical",
 		critChance = 0.25,
 		critMultiplier = 2.2,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Wooden Katana", emoji = "🥢", damage = 20, critChance = 0.25 },
 			{ name = "Iron Katana", emoji = "🗡️", damage = 30, critChance = 0.28 },
@@ -232,7 +232,7 @@ return {
 		element = "dark",
 		critChance = 0.15,
 		critMultiplier = 2.5,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Wooden Scythe", emoji = "🔪", damage = 22, critChance = 0.15 },
 			{ name = "Iron Scythe", emoji = "⚔️", damage = 34, critChance = 0.17 },
@@ -255,7 +255,7 @@ return {
 		element = "physical",
 		critChance = 0.2,
 		critMultiplier = 1.8,
-		hitSound = "rbxassetid://4712381813",
+		hitSound = "rbxassetid://160005893",
 		tiers = {
 			{ name = "Leather Whip", emoji = "🪢", damage = 14, critChance = 0.2 },
 			{ name = "Chain Whip", emoji = "⛓️", damage = 22, critChance = 0.22 },

@@ -12,20 +12,20 @@ return {
 		Hard = { damageMultiplier = 1.5, coinMultiplier = 2 },
 		Nightmare = { damageMultiplier = 2, coinMultiplier = 3 },
 	},
-	-- Sound configuration (Roblox free sounds)
+	-- Sound configuration (verified working Roblox sound IDs)
 	Sounds = {
-		Hit = "rbxassetid://4712381813",
-		CritHit = "rbxassetid://4712386962",
-		Kill = "rbxassetid://4712384545",
-		Ability = "rbxassetid://4712381194",
-		LevelUp = "rbxassetid://4712383709",
-		CoinCollect = "rbxassetid://4712379623",
-		CrystalCollect = "rbxassetid://4712380437",
-		Teleport = "rbxassetid://4712378717",
-		BossSpawn = "rbxassetid://4712377962",
-		BossDefeat = "rbxassetid://4712386057",
-		ChestOpen = "rbxassetid://4712376493",
-		Purchase = "rbxassetid://4712382953",
+		Hit = "rbxassetid://160005893",
+		CritHit = "rbxassetid://4825495061",
+		Kill = "rbxassetid://12221867",
+		Ability = "rbxassetid://130844619",
+		LevelUp = "rbxassetid://138232555",
+		CoinCollect = "rbxassetid://138232555",
+		CrystalCollect = "rbxassetid://130844619",
+		Teleport = "rbxassetid://161006044",
+		BossSpawn = "rbxassetid://12221867",
+		BossDefeat = "rbxassetid://12221867",
+		ChestOpen = "rbxassetid://160005893",
+		Purchase = "rbxassetid://4825495061",
 	},
 	-- Ambient particle textures (free)
 	Particles = {
