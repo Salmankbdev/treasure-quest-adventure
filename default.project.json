@@ -1,0 +1,23 @@
+{
+  "name": "treasure-quest-adventure",
+  "globIgnorePaths": ["*.spec.lua", "*.test.lua"],
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Shared": { "$path": "src/ReplicatedStorage/Shared" }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "Server": { "$path": "src/ServerScriptService/Server" }
+    },
+    "StarterGui": {
+      "$className": "StarterGui",
+      "UI": { "$path": "src/StarterGui/UI" }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": { "$path": "src/StarterPlayer/StarterPlayerScripts" }
+    }
+  }
+}
